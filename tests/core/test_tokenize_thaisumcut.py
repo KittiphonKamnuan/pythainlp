@@ -261,11 +261,16 @@ class SplitIntoSentencesTestCase(unittest.TestCase):
             ["ผมไปโรงเรียนครับ", "วันนี้อากาศดีค่ะ"],
         )
 
-    def test_placeholder_leak(self) -> None:
-        # BUG-LEDGER: thaisumcut-placeholder-leak
-        # Nested protection leaves a placeholder in the output.
-        # Expected: ["เขามีแต่หลังจากไป"].
-        self.assertEqual(
-            self.segmentor.split_into_sentences("เขามีแต่หลังจากไป"),
-            ["เขามีแต่<langjak>ไป"],
+    def test_nested_placeholders_are_restored(self) -> None:
+        # Overlapping protected phrases nest, as in "มี<tea><langjak>".
+        cases = (
+            ("เขามีแต่หลังจากไป", ["เขามีแต่หลังจากไป"]),
+            ("จะทำเพื่อ", ["จะทำเพื่อ"]),
+            ("ตั้งโดยหลังจาก", ["ตั้งโดยหลังจาก"]),
+            ("หรือแม้แต่หลังจาก", ["หรือแม้แต่หลังจาก"]),
         )
+        for text, expected in cases:
+            with self.subTest(text=text):
+                self.assertEqual(
+                    self.segmentor.split_into_sentences(text), expected
+                )

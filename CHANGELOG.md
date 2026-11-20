@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `tokenize.thaisumcut`: placeholders of overlapping protected phrases,
+  such as "<langjak>", no longer leak into the output
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

@@ -162,11 +162,6 @@ Entry format:
   that ends with a separator, such as `["ก", " ", "ข", " "]`, gets an extra
   empty sentence: `[["ก"], ["ข"], []]`. Expected: `[["ก"], ["ข"]]`.
   Pinning test: `test_whitespace_engines_word_list_trailing_separator`.
-- **`thaisumcut-placeholder-leak`** `pythainlp/tokenize/thaisumcut.py`.
-  Placeholder text can leak into the output. Overlapping protected
-  phrases break the restore step. `split_into_sentences("เขามีแต่หลังจากไป")`
-  returns `["เขามีแต่<langjak>ไป"]`. Expected: `["เขามีแต่หลังจากไป"]`.
-  Pinning test: `test_placeholder_leak`.
 - **`sent-tokenize-strip-misaligns-words`** `pythainlp/tokenize/core.py`:
   `sent_tokenize`. A word list with `keep_whitespace=False` and an engine
   other than `crfcut`, `whitespace`, or `whitespace+newline` maps word

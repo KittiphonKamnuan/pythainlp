@@ -335,6 +335,21 @@ def _replace_all(text: str, pairs: tuple[tuple[str, str], ...]) -> str:
     return text
 
 
+def _restore_placeholders(text: str) -> str:
+    """
+    Restore the placeholders until none of them is left.
+
+    Overlapping protected phrases can nest: "มีแต่หลังจาก" becomes
+    "มี<tea><langjak>", and "แต่<langjak>" can only be restored after
+    "มี<tea>" is. One pass in the order of _RESTORE misses it.
+    """
+    while True:
+        restored = _replace_all(text, _RESTORE)
+        if restored == text:
+            return restored
+        text = restored
+
+
 def _mark_boundaries(text: str) -> str:
     for pattern, repl in _BOUNDARY_RULES:
         text = pattern.sub(repl, text)
@@ -368,7 +383,7 @@ class ThaiSentenceSegmentor:
                 text = _split_around_keyword(text, keyword, end_gap, near_gap)
 
         text = _mark_boundaries(text)
-        text = _replace_all(text, _RESTORE)
+        text = _restore_placeholders(text)
         text = text.replace("?", "?<stop>")
         text = text.replace("!", "!<stop>")
         text = text.replace("<prd>", ".")
