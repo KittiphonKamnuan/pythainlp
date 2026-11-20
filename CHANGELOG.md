@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `sent_tokenize()` with a list of words: words are no longer split or
+  merged when the engine strips whitespace or `keep_whitespace=False`
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

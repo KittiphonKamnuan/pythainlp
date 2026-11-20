@@ -167,13 +167,6 @@ Entry format:
   phrases break the restore step. `split_into_sentences("เขามีแต่หลังจากไป")`
   returns `["เขามีแต่<langjak>ไป"]`. Expected: `["เขามีแต่หลังจากไป"]`.
   Pinning test: `test_placeholder_leak`.
-- **`sent-tokenize-strip-misaligns-words`** `pythainlp/tokenize/core.py`:
-  `sent_tokenize`. A word list with `keep_whitespace=False` and an engine
-  other than `crfcut`, `whitespace`, or `whitespace+newline` maps word
-  offsets onto the stripped sentences, so words split, merge, or vanish:
-  sentences `["ก ", "ขคง"]` for words `["ก", " ", "ขค", "ง"]` give
-  `[["ก"], ["ข", "คง"]]`. Expected: whole words, `[["ก"], ["ขค", "ง"]]`.
-  Pinning test: `test_word_list_input` in `tests/core/test_tokenize_core.py`.
 - **`longest-front-dep-typo`** `pythainlp/tokenize/longest.py`:
   `_FRONT_DEP_CHAR`. The list contains "า " with a trailing space. With
   dictionary `["ก","ข"]`, "กา" returns `["ก","า"]`. Expected: "า" joins the

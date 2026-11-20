@@ -340,10 +340,51 @@ class SentTokenizeDispatchTestCase(unittest.TestCase):
                         sent_tokenize(
                             words, engine=engine, keep_whitespace=False
                         ),
-                        # BUG-LEDGER: sent-tokenize-strip-misaligns-words
-                        [["ก"], ["ข", "คง"]],
+                        [["ก"], ["ขค", "ง"]],
                     )
                 self.assertEqual(rec.calls, [(("ก ขคง",), {})] * 2)
+
+    def test_word_list_input_keeps_words_whole(self) -> None:
+        # (engine output, keep_whitespace, expected); the engine may strip
+        # or drop whitespace, and words are never split. A word cut by a
+        # sentence boundary goes to the sentence where it starts.
+        words = [" ", "ก", " ", "ขค", "ง", " ", "จ", " "]
+        cases = (
+            (
+                ["ก", "ขคง", "จ"],
+                True,
+                [[" ", "ก", " "], ["ขค", "ง", " "], ["จ", " "]],
+            ),
+            (["ก", "ขคง", "จ"], False, [["ก"], ["ขค", "ง"], ["จ"]]),
+            ([" ก ", "ข", "คง จ "], False, [["ก"], ["ขค"], ["ง", " ", "จ"]]),
+            (["ก", "  ", "ขคง จ"], False, [["ก"], ["ขค", "ง", " ", "จ"]]),
+            (["  "], False, [["ก", " ", "ขค", "ง", " ", "จ"]]),
+            ([], True, [words]),
+        )
+        for result, keep_whitespace, expected in cases:
+            with self.subTest(result=result, keep_whitespace=keep_whitespace):
+                with fake_engine(
+                    "pythainlp.tokenize.tltk", "sent_tokenize", result
+                ):
+                    self.assertEqual(
+                        sent_tokenize(
+                            words,
+                            engine="tltk",
+                            keep_whitespace=keep_whitespace,
+                        ),
+                        expected,
+                    )
+
+    def test_word_list_input_engine_changes_text(self) -> None:
+        # A sentence not found in the text falls back to mapping by offset,
+        # which reads the words from the engine output.
+        with fake_engine(
+            "pythainlp.tokenize.tltk", "sent_tokenize", ["กข", "X"]
+        ):
+            self.assertEqual(
+                sent_tokenize(["ก", "ข", "ค"], engine="tltk"),
+                [["ก", "ข"], ["X"]],
+            )
 
     def test_word_list_input_crfcut_ignores_segments(self) -> None:
         # BUG-LEDGER: sent-tokenize-crfcut-segments

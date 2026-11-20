@@ -453,10 +453,74 @@ def _sent_tokenize_words(
         # BUG-LEDGER: sent-tokenize-crfcut-segments
         # The crfcut result is not used; all words go in one sentence.
         segments = [original_text]
-    elif not keep_whitespace:
-        segments = strip_whitespace(segments)
 
-    return map_indices_to_words(indices_words(words), segments)
+    sentences = _group_words_by_sentence(words, original_text, segments)
+    if sentences is None:
+        # A sentence is not found in the text; fall back to offsets.
+        sentences = map_indices_to_words(indices_words(words), segments)
+    if engine != "crfcut" and not keep_whitespace:
+        sentences = _strip_whitespace_words(sentences)
+    return sentences
+
+
+def _group_words_by_sentence(
+    words: list[str], text: str, segments: list[str]
+) -> Optional[list[list[str]]]:
+    """
+    Group whole words into the sentences found in ``text``.
+
+    A sentence engine may strip or drop whitespace, so its output does not
+    always line up with ``text`` by offset. Find each sentence in ``text``
+    instead; a sentence runs up to the start of the next one, so the
+    whitespace between two sentences goes with the first. A word goes to
+    the sentence where it starts.
+
+    :return: list of sentences, each a list of words, or None if a
+        sentence is not found in ``text``
+    """
+    starts: list[int] = []
+    cursor = 0
+    for segment in segments:
+        core = segment.strip()
+        if not core:
+            continue
+        index = text.find(core, cursor)
+        if index < 0:
+            return None
+        starts.append(index)
+        cursor = index + len(core)
+    if not starts:
+        return [list(words)] if words else []
+    starts[0] = 0
+
+    result: list[list[str]] = [[] for _ in starts]
+    position = 0
+    sentence = 0
+    for word in words:
+        while sentence + 1 < len(starts) and position >= starts[sentence + 1]:
+            sentence += 1
+        result[sentence].append(word)
+        position += len(word)
+    return [s for s in result if s]
+
+
+def _strip_whitespace_words(sentences: list[list[str]]) -> list[list[str]]:
+    """
+    Remove space-only words at both ends of each sentence.
+
+    Drop the sentences that become empty, as ``strip_whitespace()`` does
+    for sentence strings.
+    """
+    result: list[list[str]] = []
+    for sentence in sentences:
+        start, end = 0, len(sentence)
+        while start < end and not sentence[start].strip(" "):
+            start += 1
+        while end > start and not sentence[end - 1].strip(" "):
+            end -= 1
+        if start < end:
+            result.append(sentence[start:end])
+    return result
 
 
 def _is_space_separator(word: str) -> bool:
