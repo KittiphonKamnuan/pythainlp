@@ -192,26 +192,26 @@ _GOLDEN = [
     ),
     (
         ("15/07/2565", "%d/%m/%Y", "be", None, "d"),
-        ("IndexError", "list index out of range"),
+        (2022, 7, 15, 0, 0, 0, 0, "Asia/Bangkok"),
     ),
     (
         ("15/7/65", "%-d/%-m/%y", "be", None, "d"),
-        ("IndexError", "list index out of range"),
+        (2022, 7, 15, 0, 0, 0, 0, "Asia/Bangkok"),
     ),
     (
         ("15 ก.ค. 65", "%d %B %y", "be", None, "d"),
-        ("IndexError", "list index out of range"),
+        (2022, 7, 15, 0, 0, 0, 0, "Asia/Bangkok"),
     ),
     (
         ("15 ก.ค. 65", "%d %B %-y", "be", None, "d"),
-        ("IndexError", "list index out of range"),
+        (2022, 7, 15, 0, 0, 0, 0, "Asia/Bangkok"),
     ),
     (("15 ก.ค.", "%d %B", "be", None, "d"), ("KeyError", "'Y'")),
     (("ก.ค. 2565", "%B %Y", "be", None, "d"), ("KeyError", "'d'")),
     (("15 2565", "%d %Y", "be", None, "d"), ("KeyError", "'B'")),
     (
         ("15 ก.ค. 2565 %m 09", "%d %B %Y %m %H", "be", None, "d"),
-        ("KeyError", "'H'"),
+        ("IndexError", "list index out of range"),
     ),
     (
         ("no match", "%d %B %Y %H:%M:%S", "be", None, "d"),
@@ -281,20 +281,32 @@ class ThaiStrptimeTestCase(unittest.TestCase):
             "2022-07-15T09:00:01+07:00",
         )
 
-    # BUG-LEDGER: thai-strptime-m-y
-    def test_bug_m_and_y_directives_unsupported(self) -> None:
-        # Expected: parse "15/07/2565" with "%d/%m/%Y" and "15/7/65" with
-        # "%-d/%-m/%y". Currently %m and %y are left in the pattern, so
-        # nothing matches and IndexError is raised.
-        for text, fmt in (
-            ("15/07/2565", "%d/%m/%Y"),
-            ("15/7/65", "%-d/%-m/%y"),
-            ("15 ก.ค. 65", "%d %B %y"),
-            ("15 ก.ค. 65", "%d %B %-y"),
-        ):
-            with self.subTest(fmt=fmt):
+    def test_m_and_y_directives(self) -> None:
+        cases = (
+            ("15/07/2565", "%d/%m/%Y", "be", "2022-07-15T00:00:00+07:00"),
+            ("15/7/65", "%-d/%-m/%y", "be", "2022-07-15T00:00:00+07:00"),
+            ("15 ก.ค. 65", "%d %B %y", "be", "2022-07-15T00:00:00+07:00"),
+            ("15 ก.ค. 65", "%d %B %-y", "be", "2022-07-15T00:00:00+07:00"),
+            ("1/1/65", "%d/%m/%y", "be", "2022-01-01T00:00:00+07:00"),
+            ("31/12/22", "%d/%m/%y", "ad", "2022-12-31T00:00:00+07:00"),
+            (
+                "31/12/2565 23:59",
+                "%d/%m/%Y %H:%M",
+                "be",
+                "2022-12-31T23:59:00+07:00",
+            ),
+        )
+        for text, fmt, era, expected in cases:
+            with self.subTest(text=text, fmt=fmt):
+                self.assertEqual(
+                    thai_strptime(text, fmt, year=era).isoformat(), expected
+                )
+
+    def test_m_directive_rejects_month_out_of_range(self) -> None:
+        for text in ("15/13/2565", "15/0/2565", "15/00/2565"):
+            with self.subTest(text=text):
                 with self.assertRaises(IndexError):
-                    thai_strptime(text, fmt)
+                    thai_strptime(text, "%d/%m/%Y")
 
     def test_invalid_pattern(self) -> None:
         with self.assertRaises(re.error):

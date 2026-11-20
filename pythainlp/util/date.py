@@ -180,7 +180,9 @@ def _find_month(text: str) -> int:
 _STRPTIME_REGEX: tuple[tuple[str, str], ...] = (
     ("%d", dates_list),
     ("%B", thai_full_month_lists_regex),
+    ("%m", r"(1[0-2]|0?[1-9])"),
     ("%Y", year_all_regex),
+    ("%y", r"(\d\d)"),
     ("%H", r"(\d\d|\d)"),
     ("%M", r"(\d\d|\d)"),
     ("%S", r"(\d\d|\d)"),
@@ -196,12 +198,8 @@ def _fmt_to_regex(fmt: str) -> str:
 
 
 def _fmt_keys(fmt: str) -> list[str]:
-    """Names of the directives in ``fmt``, with the separators removed."""
-    return [
-        i.strip().strip("-").strip(":").strip(".")
-        for i in fmt.split("%")
-        if i != ""
-    ]
+    """Names of the directives in ``fmt``, in order."""
+    return re.findall(r"%([A-Za-z])", fmt)
 
 
 def _full_year(y: str, year: str, add_year: Optional[int]) -> str:
@@ -244,7 +242,9 @@ def thai_strptime(
     Supported directives in ``fmt``:
         * *%d* - Day (1 - 31)
         * *%B* - Thai month (03, 3, มี.ค., or มีนาคม)
+        * *%m* - Month number (1 - 12, or 01 - 12)
         * *%Y* - Year (66, 2566, or 2023)
+        * *%y* - Two-digit year (66)
         * *%H* - Hour (0 - 23)
         * *%M* - Minute (0 - 59)
         * *%S* - Second (0 - 59)
@@ -266,8 +266,8 @@ def thai_strptime(
 
     data = {i: "".join(list(j)) for i, j in zip(keys, y_matches[0])}
     d = data["d"]
-    m: int = _find_month(data["B"])
-    y = data["Y"]
+    m: int = int(data["m"]) if "m" in data else _find_month(data["B"])
+    y = data["y"] if "y" in data else data["Y"]
     time_parts: list[Union[int, str]] = [
         data[name] if name in keys else 0 for name in _TIME_KEYS
     ]

@@ -140,8 +140,6 @@ Entry format:
   The consonant sets are inconsistent between functions.
 - **`thaiword-to-time-ti`** `pythainlp/util/time.py`: `thaiword_to_time`.
   Input with "ตี" has no break after it.
-- **`thai-strptime-m-y`** `pythainlp/util/date.py`: `thai_strptime`.
-  Directives `%m` and `%y` are handled incorrectly.
 - **`count-thai-chars-double`** `pythainlp/util/thai.py`: `count_thai_chars`.
   Some characters are counted twice.
 - **`numtoword-ed-duplicate`** `pythainlp/util/numtoword.py`.

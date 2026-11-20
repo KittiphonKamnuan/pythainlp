@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `thai_strptime()`: support the `%m` (month number) and `%y` (two-digit
+  year) directives
+
 ## [5.4.0] - 2026-10-09
 
 ### Added
