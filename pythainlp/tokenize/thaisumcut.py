@@ -146,7 +146,9 @@ _RESTORE: tuple[tuple[str, str], ...] = (
     ("จน<tamhai>", "จนทำให้"),
     ("เว้น<rth_tea>", "เว้นแต่"),
     ("ก็<tamhai>", "ก็ทำให้"),
-    (" ณ <tonnan>", " ณ ตอนนั้น"),
+    # Only " ณ ตอนนั้น" makes "<tonnan>"; the space before ณ can be
+    # stripped at a sentence start, so restore without it.
+    ("<tonnan>", "ตอนนั้น"),
     ("บาง<rth_suan>", "บางส่วน"),
     ("หรือ<rth_meatea>", "หรือแม้แต่"),
     ("โดย<tamhai>", "โดยทำให้"),

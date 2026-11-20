@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `tokenize.thaisumcut`: "ณ ตอนนั้น" at the start of a sentence no longer
+  leaves the placeholder "<tonnan>" in the output
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

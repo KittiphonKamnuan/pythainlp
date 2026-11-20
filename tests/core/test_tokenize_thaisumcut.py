@@ -261,6 +261,15 @@ class SplitIntoSentencesTestCase(unittest.TestCase):
             ["ผมไปโรงเรียนครับ", "วันนี้อากาศดีค่ะ"],
         )
 
+    def test_tonnan_at_sentence_start(self) -> None:
+        # The space before "ณ" is stripped at a sentence start.
+        for text in ("ณ ตอนนั้นซึ่งมีและ", " ณ ตอนนั้นซึ่งมีและ"):
+            with self.subTest(text=text):
+                self.assertEqual(
+                    self.segmentor.split_into_sentences(text),
+                    ["ณ ตอนนั้นซึ่งมีและ"],
+                )
+
     def test_placeholder_leak(self) -> None:
         # BUG-LEDGER: thaisumcut-placeholder-leak
         # Nested protection leaves a placeholder in the output.
