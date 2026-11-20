@@ -213,8 +213,6 @@ Entry format:
 
 #### Benchmarks, generate, lm, augment, morpheme
 
-- **`wordnetaug-pos-ignored`** `pythainlp/augment`: `WordNetAug`.
-  The part-of-speech filter is ignored.
 - **`remove-repeated-ngrams-zero`** `pythainlp/lm/text_util.py`:
   `remove_repeated_ngrams`. Slice `[-0:]` returns the whole list.
 - **`remove-repeated-ngrams-tail`** `pythainlp/lm/text_util.py`:

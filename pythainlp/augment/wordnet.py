@@ -171,7 +171,7 @@ class WordNetAug:
             else:
                 self.list_synsets: list[Synset] = wordnet.synsets(word)
 
-        for self.synset in wordnet.synsets(word):
+        for self.synset in self.list_synsets:  # noqa: B020
             for self.syn in self.synset.lemma_names(lang="tha"):  # noqa: B020
                 self.synonyms.append(self.syn)
 
@@ -228,8 +228,8 @@ class WordNetAug:
         else:
             for word in self.list_words:
                 self._add_synonyms(word, self.find_synonyms(word))
-        if max_syn_sent > self.p_all:
-            max_syn_sent = self.p_all
+        # At most p_all sentences, and none for a negative limit.
+        max_syn_sent = max(0, min(max_syn_sent, self.p_all))
         combinations = list(itertools.product(*self.list_synonym))
         return [list(x) for x in combinations[0:max_syn_sent]]
 

@@ -123,16 +123,7 @@ GOLDEN: list[list[Any]] = [
                 ["y", "b", "z", "r"],
             ],
         ],
-        [
-            ["a", "n"],
-            ["a", None],
-            ["b", "v"],
-            ["b", None],
-            ["c", None],
-            ["c", None],
-            ["d", "a"],
-            ["d", None],
-        ],
+        [["a", "n"], ["b", "v"], ["c", None], ["d", "a"]],
     ],
     [
         "a b c d",
@@ -150,16 +141,7 @@ GOLDEN: list[list[Any]] = [
                 ["y", "b", "z", "r"],
             ],
         ],
-        [
-            ["a", None],
-            ["a", None],
-            ["b", None],
-            ["b", None],
-            ["c", None],
-            ["c", None],
-            ["d", None],
-            ["d", None],
-        ],
+        [["a", None], ["b", None], ["c", None], ["d", None]],
     ],
     [
         "a b c d",
@@ -177,16 +159,7 @@ GOLDEN: list[list[Any]] = [
                 ["y", "b", "z", "r"],
             ],
         ],
-        [
-            ["a", "n"],
-            ["a", None],
-            ["b", "v"],
-            ["b", None],
-            ["c", None],
-            ["c", None],
-            ["d", "a"],
-            ["d", None],
-        ],
+        [["a", "n"], ["b", "v"], ["c", None], ["d", "a"]],
     ],
     [
         "a b c d",
@@ -204,26 +177,10 @@ GOLDEN: list[list[Any]] = [
                 ["y", "b", "z", "r"],
             ],
         ],
-        [
-            ["a", None],
-            ["a", None],
-            ["b", None],
-            ["b", None],
-            ["c", None],
-            ["c", None],
-            ["d", None],
-            ["d", None],
-        ],
+        [["a", None], ["b", None], ["c", None], ["d", None]],
     ],
     ["e", 6, True, "orchid", ["exc", "KeyError", "'XXX'"], []],
-    [
-        "e",
-        6,
-        True,
-        "other",
-        ["ok", [["m"], ["n"]]],
-        [["e", None], ["e", None]],
-    ],
+    ["e", 6, True, "other", ["ok", [["m"], ["n"]]], [["e", None]]],
     ["", 6, False, "orchid", ["ok", [[]]], []],
     [
         "c d",
@@ -231,61 +188,24 @@ GOLDEN: list[list[Any]] = [
         False,
         "other",
         ["ok", [["z", "p"]]],
-        [["c", None], ["c", None], ["d", None], ["d", None]],
+        [["c", None], ["d", None]],
     ],
-    ["a", 0, False, "orchid", ["ok", []], [["a", None], ["a", None]]],
+    ["a", 0, False, "orchid", ["ok", []], [["a", None]]],
     [
         "c d",
         100,
         True,
         "other",
         ["ok", [["z", "p"], ["z", "q"], ["z", "r"]]],
-        [["c", None], ["c", None], ["d", None], ["d", None]],
+        [["c", None], ["d", None]],
     ],
     [
         "d d d",
         -1,
         True,
         "other",
-        [
-            "ok",
-            [
-                ["p", "p", "p"],
-                ["p", "p", "q"],
-                ["p", "p", "r"],
-                ["p", "q", "p"],
-                ["p", "q", "q"],
-                ["p", "q", "r"],
-                ["p", "r", "p"],
-                ["p", "r", "q"],
-                ["p", "r", "r"],
-                ["q", "p", "p"],
-                ["q", "p", "q"],
-                ["q", "p", "r"],
-                ["q", "q", "p"],
-                ["q", "q", "q"],
-                ["q", "q", "r"],
-                ["q", "r", "p"],
-                ["q", "r", "q"],
-                ["q", "r", "r"],
-                ["r", "p", "p"],
-                ["r", "p", "q"],
-                ["r", "p", "r"],
-                ["r", "q", "p"],
-                ["r", "q", "q"],
-                ["r", "q", "r"],
-                ["r", "r", "p"],
-                ["r", "r", "q"],
-            ],
-        ],
-        [
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-        ],
+        ["ok", []],
+        [["d", None], ["d", None], ["d", None]],
     ],
     [
         "c d",
@@ -293,48 +213,27 @@ GOLDEN: list[list[Any]] = [
         True,
         "orchid",
         ["ok", [["z", "p"], ["z", "q"], ["z", "r"]]],
-        [["c", None], ["c", None], ["d", "a"], ["d", None]],
+        [["c", None], ["d", "a"]],
     ],
-    [
-        "c d",
-        0,
-        True,
-        "other",
-        ["ok", []],
-        [["c", None], ["c", None], ["d", None], ["d", None]],
-    ],
+    ["c d", 0, True, "other", ["ok", []], [["c", None], ["d", None]]],
     [
         "a a",
         1,
         True,
         "other",
         ["ok", [["x", "x"]]],
-        [["a", None], ["a", None], ["a", None], ["a", None]],
+        [["a", None], ["a", None]],
     ],
-    ["b", -1, True, "orchid", ["ok", []], [["b", "v"], ["b", None]]],
+    ["b", -1, True, "orchid", ["ok", []], [["b", "v"]]],
     [
         "d d d",
         1,
         False,
         "orchid",
         ["ok", [["p", "p", "p"]]],
-        [
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-        ],
+        [["d", None], ["d", None], ["d", None]],
     ],
-    [
-        "a",
-        2,
-        True,
-        "other",
-        ["ok", [["x"], ["y"]]],
-        [["a", None], ["a", None]],
-    ],
+    ["a", 2, True, "other", ["ok", [["x"], ["y"]]], [["a", None]]],
     ["", 0, True, "orchid", ["ok", []], []],
     [
         "c d",
@@ -342,7 +241,7 @@ GOLDEN: list[list[Any]] = [
         True,
         "other",
         ["ok", [["z", "p"], ["z", "q"]]],
-        [["c", None], ["c", None], ["d", None], ["d", None]],
+        [["c", None], ["d", None]],
     ],
     [
         "a b c d",
@@ -350,16 +249,7 @@ GOLDEN: list[list[Any]] = [
         True,
         "other",
         ["ok", [["x", "b", "z", "p"], ["x", "b", "z", "q"]]],
-        [
-            ["a", None],
-            ["a", None],
-            ["b", None],
-            ["b", None],
-            ["c", None],
-            ["c", None],
-            ["d", None],
-            ["d", None],
-        ],
+        [["a", None], ["b", None], ["c", None], ["d", None]],
     ],
     [
         "a c d b",
@@ -367,16 +257,7 @@ GOLDEN: list[list[Any]] = [
         False,
         "other",
         ["ok", []],
-        [
-            ["a", None],
-            ["a", None],
-            ["c", None],
-            ["c", None],
-            ["d", None],
-            ["d", None],
-            ["b", None],
-            ["b", None],
-        ],
+        [["a", None], ["c", None], ["d", None], ["b", None]],
     ],
     [
         "a c d b",
@@ -384,41 +265,18 @@ GOLDEN: list[list[Any]] = [
         True,
         "orchid",
         ["ok", [["x", "z", "p", "b"]]],
-        [
-            ["a", "n"],
-            ["a", None],
-            ["c", None],
-            ["c", None],
-            ["d", "a"],
-            ["d", None],
-            ["b", "v"],
-            ["b", None],
-        ],
+        [["a", "n"], ["c", None], ["d", "a"], ["b", "v"]],
     ],
-    ["b", 2, True, "orchid", ["ok", [["b"]]], [["b", "v"], ["b", None]]],
-    ["b", -1, False, "other", ["ok", []], [["b", None], ["b", None]]],
-    [
-        "x y",
-        0,
-        False,
-        "orchid",
-        ["ok", []],
-        [["x", None], ["x", None], ["y", None], ["y", None]],
-    ],
+    ["b", 2, True, "orchid", ["ok", [["b"]]], [["b", "v"]]],
+    ["b", -1, False, "other", ["ok", []], [["b", None]]],
+    ["x y", 0, False, "orchid", ["ok", []], [["x", None], ["y", None]]],
     [
         "d d d",
         2,
         True,
         "orchid",
         ["ok", [["p", "p", "p"], ["p", "p", "q"]]],
-        [
-            ["d", "a"],
-            ["d", None],
-            ["d", "a"],
-            ["d", None],
-            ["d", "a"],
-            ["d", None],
-        ],
+        [["d", "a"], ["d", "a"], ["d", "a"]],
     ],
     [
         "d d d",
@@ -426,14 +284,7 @@ GOLDEN: list[list[Any]] = [
         True,
         "other",
         ["ok", [["p", "p", "p"], ["p", "p", "q"]]],
-        [
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-            ["d", None],
-        ],
+        [["d", None], ["d", None], ["d", None]],
     ],
 ]
 
@@ -482,28 +333,23 @@ class WordNetAugCharacterizationTestCase(unittest.TestCase):
         self.aug.augment("a b", str.split, 6, False)
         self.assertEqual(self.aug.list_synonym, [["x", "y"], ["b"]])
 
-    # BUG-LEDGER: wordnetaug-pos-ignored
-    def test_bug_pos_filter_is_ignored(self) -> None:
-        """
-        The synonyms ignore ``pos``; only an unused lookup uses it.
+    def test_pos_filters_synsets(self) -> None:
+        """The synonyms come from the synsets of the WordNet POS."""
+        by_pos = {"n": [["x"]], None: [["x", "y"], ["z"]]}
 
-        Expected: synsets are filtered by the WordNet POS.
-        """
-        with_pos = self.aug.find_synonyms("a", "NCMN")
-        without_pos = self.aug.find_synonyms("a")
-        self.assertEqual(with_pos, without_pos)
-        self.assertEqual(
-            self.fake.calls,
-            [("a", "n"), ("a", None), ("a", None), ("a", None)],
-        )
+        def synsets(word: str, pos: Any = None) -> list[FakeSynset]:
+            self.fake.calls.append((word, pos))
+            return [FakeSynset(names) for names in by_pos[pos]]
 
-    # BUG-LEDGER: wordnetaug-pos-ignored
-    def test_bug_negative_max_syn_sent_drops_last_sentence(self) -> None:
-        """A negative limit slices ``[0:-1]``; expected: no clamp below 0."""
-        self.assertEqual(
-            self.aug.augment("c d", str.split, -1, False),
-            [["z", "p"], ["z", "q"]],
-        )
+        with mock.patch.object(self.module.wordnet, "synsets", synsets):
+            self.assertEqual(self.aug.find_synonyms("a", "NCMN"), ["x"])
+            self.assertEqual(self.aug.find_synonyms("a"), ["x", "y", "z"])
+        self.assertEqual(self.fake.calls, [("a", "n"), ("a", None)])
+
+    def test_negative_max_syn_sent_gives_no_sentence(self) -> None:
+        """A negative limit counts as 0, not as a slice from the end."""
+        self.assertEqual(self.aug.augment("c d", str.split, -1, False), [])
+        self.assertEqual(self.aug.augment("c d", str.split, 0, False), [])
 
     def test_postype2wordnet(self) -> None:
         self.assertEqual(self.module.postype2wordnet("NCMN", "orchid"), "n")

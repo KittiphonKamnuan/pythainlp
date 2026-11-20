@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `WordNetAug.find_synonyms()` uses the synsets filtered by `pos`;
+  `augment()` returns no sentence for a negative `max_syn_sent`
+
 ## [5.4.0] - 2026-10-09
 
 ### Added
