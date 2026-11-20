@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `transliterate.royin`: `_replace_consonants()` reads each consonant from
+  the word, so a short consonants argument no longer raises `IndexError`
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

@@ -177,7 +177,7 @@ def _double_ro_rua(word: str, i: int) -> Optional[list[str]]:
 
 
 def _initial_consonant(
-    word: str, i: int, consonants: str, j: int, mod_chars: list[str]
+    word: str, i: int, mod_chars: list[str]
 ) -> tuple[list[str], bool]:
     """
     Romanize a consonant of an initial cluster.
@@ -187,7 +187,7 @@ def _initial_consonant(
     # mod_chars contains romanized output: look for non-vowel characters
     if not any(c and c not in _ROMANIZED_VOWELS for c in mod_chars):
         # First consonant in the cluster; an empty initial (e.g. อ) is skipped
-        initial = _CONSONANTS[consonants[j]][0]
+        initial = _CONSONANTS[word[i]][0]
         return ([initial] if initial else []), False
 
     is_cluster_consonant = word[i] in _CLUSTER_SECOND
@@ -196,26 +196,24 @@ def _initial_consonant(
     if is_cluster_consonant and not is_last_char:
         # ร/r, ล/l, or ว/w after the first consonant is part of the initial
         # cluster (e.g. กรม/krom: ก/k+ร/r are cluster, ม/m is final)
-        return [_CONSONANTS[consonants[j]][0]], False
+        return [_CONSONANTS[word[i]][0]], False
     if not is_cluster_consonant and not is_last_char:
         # Start of a new syllable: close the previous one with implicit "a"
-        initial = _CONSONANTS[consonants[j]][0]
+        initial = _CONSONANTS[word[i]][0]
         return (["a", initial] if initial else ["a"]), False
     # Last character without a vowel: final consonant with implicit "o"
-    return ["o", _CONSONANTS[consonants[j]][1]], True
+    return ["o", _CONSONANTS[word[i]][1]], True
 
 
-def _consonant_after_vowel(
-    word: str, i: int, consonants: str, j: int
-) -> tuple[str, bool]:
+def _consonant_after_vowel(word: str, i: int) -> tuple[str, bool]:
     """
     Romanize a consonant after a vowel: final or start of a new syllable.
 
     :return: romanized string to append, and the new vowel-seen flag
     """
     if i + 1 < len(word) and word[i + 1] not in _CONSONANTS:
-        return _CONSONANTS[consonants[j]][0], False  # new syllable
-    return _CONSONANTS[consonants[j]][1], True
+        return _CONSONANTS[word[i]][0], False  # new syllable
+    return _CONSONANTS[word[i]][1], True
 
 
 def _replace_consonants(word: str, consonants: str) -> str:
@@ -224,20 +222,18 @@ def _replace_consonants(word: str, consonants: str) -> str:
 
     mod_chars: list[str] = []
     skip = False
-    j = 0  # index of the consonants string
     vowel_seen = False  # True once a non-consonant character is seen
 
     for i in range(len(word)):
         char = word[i]
         if skip:
             skip = False
-            j += 1
         elif char not in _CONSONANTS:  # not a Thai consonant
             vowel_seen = True
             mod_chars.append(char)
         elif not mod_chars and char == _HO_HIP and len(consonants) != 1:
             # Skip HO HIP unless it is the only consonant
-            j += 1
+            pass
         else:
             double_ro_rua = _double_ro_rua(word, i)
             if double_ro_rua is not None:
@@ -245,16 +241,11 @@ def _replace_consonants(word: str, consonants: str) -> str:
                 skip = True
                 vowel_seen = True  # "a" acts as a vowel
             elif not vowel_seen:
-                chars, vowel_seen = _initial_consonant(
-                    word, i, consonants, j, mod_chars
-                )
+                chars, vowel_seen = _initial_consonant(word, i, mod_chars)
                 mod_chars.extend(chars)
             else:
-                final, vowel_seen = _consonant_after_vowel(
-                    word, i, consonants, j
-                )
+                final, vowel_seen = _consonant_after_vowel(word, i)
                 mod_chars.append(final)
-            j += 1
     return "".join(mod_chars)
 
 

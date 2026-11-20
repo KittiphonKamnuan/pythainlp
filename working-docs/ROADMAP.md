@@ -185,10 +185,6 @@ Entry format:
 
 #### Transliterate
 
-- **`royin-j-overrun`** `pythainlp/transliterate/royin.py`:
-  `_replace_consonants`. A consonants string shorter than the word, such
-  as `_replace_consonants("กข", "ก")`, raises `IndexError`. `romanize`
-  does not trigger it.
 - **`wiktionary-ho-rule-unreachable`** `pythainlp/transliterate/wiktionary.py`:
   `_apply_ho_rule`. The `^ห.$` check never matches, so the re-splitting of
   "ห" plus a sonorant is dead code.

@@ -71,7 +71,8 @@ DIRECT_CASES: tuple[tuple[str, str, str], ...] = (
     ("กรม", "กรม", "krom"),
     ("ก", "กข", "k"),
     ("ก", "กขค", "k"),
-    ("อ", "ก", "k"),
+    # The output follows the word, not the consonants argument.
+    ("อ", "ก", ""),
     ("ห", "ห", "h"),
     ("หก", "หก", "k"),
     ("กรร", "กน", "kan"),
@@ -99,15 +100,16 @@ class RoyinReplaceConsonantsTestCase(unittest.TestCase):
     def test_empty_word(self):
         self.assertEqual(_replace_consonants("", "ก"), "")
 
-    # BUG-LEDGER: royin-j-overrun
-    def test_consonant_index_overrun(self):
-        # Index j runs past the end of the consonants string.
-        for word, consonants in (("กข", "ก"), ("กรรม", "กม")):
+    def test_consonants_shorter_than_word(self):
+        # The consonants argument no longer drives the index, so a short
+        # one does not raise.
+        for word, consonants, expected in (
+            ("กข", "ก", "kok"),
+            ("กรรม", "กม", "kam"),
+        ):
             with self.subTest(word=word):
-                with self.assertRaises(IndexError) as ctx:
-                    _replace_consonants(word, consonants)
                 self.assertEqual(
-                    str(ctx.exception), "string index out of range"
+                    _replace_consonants(word, consonants), expected
                 )
 
     def test_extra_consonants_ignored(self):
