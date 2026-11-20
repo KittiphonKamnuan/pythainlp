@@ -328,8 +328,6 @@ class SentTokenizeDispatchTestCase(unittest.TestCase):
         words = ["ก", " ", "ขค", "ง"]
         result = ["ก ", "ขคง"]
         for engine, (module, func) in SENT_ENGINES.items():
-            if engine == "crfcut":
-                continue
             with self.subTest(engine=engine):
                 with fake_engine(module, func, result) as rec:
                     self.assertEqual(
@@ -386,10 +384,13 @@ class SentTokenizeDispatchTestCase(unittest.TestCase):
                 [["ก", "ข"], ["X"]],
             )
 
-    def test_word_list_input_crfcut_ignores_segments(self) -> None:
-        # BUG-LEDGER: sent-tokenize-crfcut-segments
+    def test_word_list_input_crfcut_uses_segments(self) -> None:
+        # crfcut sentences are used like those of any other engine.
         words = ["ก", " ", "ขค", "ง"]
-        for keep_whitespace in (True, False):
+        for keep_whitespace, expected in (
+            (True, [["ก", " "], ["ขค", "ง"]]),
+            (False, [["ก"], ["ขค", "ง"]]),
+        ):
             with self.subTest(keep_whitespace=keep_whitespace):
                 with fake_engine(
                     "pythainlp.tokenize.crfcut", "segment", ["ก ", "ขคง"]
@@ -400,7 +401,7 @@ class SentTokenizeDispatchTestCase(unittest.TestCase):
                             engine="crfcut",
                             keep_whitespace=keep_whitespace,
                         ),
-                        [words],
+                        expected,
                     )
                 self.assertEqual(rec.calls, [(("ก ขคง",), {})])
 

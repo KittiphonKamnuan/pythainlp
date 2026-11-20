@@ -449,16 +449,11 @@ def _sent_tokenize_words(
         return _split_at_separators(words, is_separator)
 
     segments = segment_sentences(original_text, engine)
-    if engine == "crfcut":
-        # BUG-LEDGER: sent-tokenize-crfcut-segments
-        # The crfcut result is not used; all words go in one sentence.
-        segments = [original_text]
-
     sentences = _group_words_by_sentence(words, original_text, segments)
     if sentences is None:
         # A sentence is not found in the text; fall back to offsets.
         sentences = map_indices_to_words(indices_words(words), segments)
-    if engine != "crfcut" and not keep_whitespace:
+    if not keep_whitespace:
         sentences = _strip_whitespace_words(sentences)
     return sentences
 

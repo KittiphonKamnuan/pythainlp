@@ -154,9 +154,6 @@ Entry format:
 
 #### Tokenize
 
-- **`sent-tokenize-crfcut-segments`** `pythainlp/tokenize/core.py`:
-  `sent_tokenize`. With `crfcut`, a list input ignores `segments`.
-  Pinning test: `test_word_list_input_crfcut_ignores_segments`.
 - **`whitespace-trailing-append`** `pythainlp/tokenize/core.py`:
   `sent_tokenize`. With `whitespace` or `whitespace+newline`, a word list
   that ends with a separator, such as `["ก", " ", "ข", " "]`, gets an extra

@@ -23,6 +23,8 @@ and this project adheres to
 
 - `sent_tokenize()` with a list of words: words are no longer split or
   merged when the engine strips whitespace or `keep_whitespace=False`
+- `sent_tokenize()` with a list of words and `crfcut`: the words are split
+  into the crfcut sentences instead of one sentence
 
 ## [5.4.0] - 2026-10-09
 
