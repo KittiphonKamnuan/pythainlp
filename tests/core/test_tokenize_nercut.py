@@ -53,7 +53,7 @@ _GOLDEN: list[list[Any]] = [
             ["d", "O"],
         ],
         ["PERSON", "DATE"],
-        ["ok", ["c", "b", "c", "c", "d"]],
+        ["ok", ["c", "a", "ba", "b", "c", "c", "d"]],
     ],
     [
         [
@@ -67,7 +67,7 @@ _GOLDEN: list[list[Any]] = [
             ["a", "B-PERSON"],
         ],
         ["PERSON"],
-        ["ok", ["a", "a", "d", "d", "a"]],
+        ["ok", ["a", "a", "d", "a", "c", "d", "d", "a"]],
     ],
     [
         [
@@ -99,7 +99,7 @@ _GOLDEN: list[list[Any]] = [
             ["d", "I-DATE"],
         ],
         ["PERSON", "DATE"],
-        ["ok", ["d", "c", "ccd"]],
+        ["ok", ["d", "c", "c", "ccd"]],
     ],
     [[], [], ["ok", []]],
     [
@@ -123,7 +123,7 @@ _GOLDEN: list[list[Any]] = [
     [
         [["a", "B-LOCATION"], ["d", "B-DATE"], ["b", "B-X"], ["b", "I-DATE"]],
         ["DATE", "LOCATION"],
-        ["ok", ["b", "b"]],
+        ["ok", ["a", "d", "b", "b"]],
     ],
     [[["d", "B-X"]], ["PERSON", "DATE"], ["ok", ["d"]]],
     [[["c", "O"]], ["DATE", "LOCATION"], ["ok", ["c"]]],
@@ -212,7 +212,7 @@ _GOLDEN: list[list[Any]] = [
     [
         [["c", "I-X"], ["b", "B-DATE"], ["b", "B-PERSON"], ["d", "B-DATE"]],
         ["DATE", "LOCATION"],
-        ["ok", ["c", "b", "d"]],
+        ["ok", ["c", "b", "b", "d"]],
     ],
     [
         [["d", "I-DATE"], ["a", "B-LOCATION"], ["c", "B-DATE"]],
@@ -266,18 +266,24 @@ class NercutGoldenTestCase(unittest.TestCase):
                     ["ab", "c"],
                 )
 
-    def test_combined_word_dropped(self):
-        # BUG-LEDGER: nercut-combined-word-dropped
-        # A pending entity is lost when the next token starts a new entity
-        # or has a tag outside taglist. Expected: "a" and "b" are kept.
-        self.assertEqual(
-            _segment([("a", "B-PERSON"), ("b", "B-PERSON")], ["PERSON"]),
-            ["b"],
+    def test_pending_entity_is_kept(self):
+        # A pending entity ends, and is kept, when the next word starts a
+        # new entity or has a tag outside taglist.
+        cases = (
+            ([("a", "B-PERSON"), ("b", "B-PERSON")], ["a", "b"]),
+            ([("a", "B-PERSON"), ("b", "B-X")], ["a", "b"]),
+            ([("a", "B-PERSON"), ("b", "I-X")], ["a", "b"]),
+            (
+                [("a", "B-PERSON"), ("b", "I-PERSON"), ("c", "B-DATE")],
+                ["ab", "c"],
+            ),
+            ([("a", "B-PERSON"), ("b", "B-X"), ("c", "O")], ["a", "b", "c"]),
         )
-        self.assertEqual(
-            _segment([("a", "B-PERSON"), ("b", "B-X")], ["PERSON"]),
-            ["b"],
-        )
+        for tagged, expected in cases:
+            with self.subTest(tagged=tagged):
+                self.assertEqual(
+                    _segment(tagged, ["PERSON", "DATE"]), expected
+                )
 
 
 if __name__ == "__main__":

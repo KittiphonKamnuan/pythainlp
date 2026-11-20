@@ -178,10 +178,6 @@ Entry format:
   `_FRONT_DEP_CHAR`. The list contains "า " with a trailing space. With
   dictionary `["ก","ข"]`, "กา" returns `["ก","า"]`. Expected: "า" joins the
   previous token.
-- **`nercut-combined-word-dropped`** `pythainlp/tokenize/nercut.py`:
-  `segment`. A pending entity is lost when the next token is another "B-"
-  tag in `taglist` or a tag outside it:
-  `[("a","B-PERSON"),("b","B-PERSON")]` returns `["b"]`. Expected: keep "a".
 
 #### Transliterate
 

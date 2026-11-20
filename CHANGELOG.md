@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `tokenize.nercut.segment()`: a pending named entity is kept when the next
+  word starts another entity or has a tag outside `taglist`
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

@@ -39,14 +39,14 @@ def _combine_step(
     :rtype: tuple[str, list[str]]
     """
     tag = curr_tag[2:] if curr_tag != "O" else "O"
+    # The pending entity ends unless this word continues it.
+    pending = [combining_word] if combining_word else []
 
     if curr_tag.startswith("B-") and tag in taglist:
-        return curr_word, []
+        return curr_word, pending
     if curr_tag.startswith("I-") and combining_word != "" and tag in taglist:
         return combining_word + curr_word, []
-    if curr_tag == "O" and combining_word != "":
-        return "", [combining_word, curr_word]
-    return "", [curr_word]
+    return "", [*pending, curr_word]
 
 
 def segment(
