@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `remove_repeated_ngrams()`: a list shorter than `n` is returned once
+  instead of with repeated tail words
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

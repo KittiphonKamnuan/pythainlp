@@ -215,12 +215,6 @@ Entry format:
 
 - **`wordnetaug-pos-ignored`** `pythainlp/augment`: `WordNetAug`.
   The part-of-speech filter is ignored.
-- **`remove-repeated-ngrams-zero`** `pythainlp/lm/text_util.py`:
-  `remove_repeated_ngrams`. Slice `[-0:]` returns the whole list.
-- **`remove-repeated-ngrams-tail`** `pythainlp/lm/text_util.py`:
-  `remove_repeated_ngrams`. With `n` longer than the list,
-  `(["a","b","c"], 5)` returns `["a","b","c","b","c"]`. Expected:
-  `["a","b","c"]`.
 - **`ngram-gen-tie-bias`** `pythainlp/generate/core.py`:
   `Trigram.gen_sentence` and `Bigram.gen_sentence`. With equal
   probabilities, `probs.index(random.choice(...))` always picks the first

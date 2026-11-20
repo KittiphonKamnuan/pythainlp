@@ -30,7 +30,7 @@ GOLDEN: list[list[Any]] = [
     [["a", "b"], 0, ["ok", ["a", "b"]]],
     [["a", "b"], -1, ["ok", ["a", "b"]]],
     [["a", "b", "a"], 1, ["ok", ["a", "b"]]],
-    [["a", "b", "c"], 5, ["ok", ["a", "b", "c", "b", "c"]]],
+    [["a", "b", "c"], 5, ["ok", ["a", "b", "c"]]],
     [["a", "a", "b", "b"], 2, ["ok", ["a", "a", "b", "b"]]],
     [None, 2, ["ok", None]],
     ["abc", 2, ["ok", ["a", "b", "c"]]],
@@ -152,25 +152,23 @@ class RemoveRepeatedNgramsTestCase(unittest.TestCase):
         empty: list[str] = []
         self.assertIs(remove_repeated_ngrams(empty), empty)
 
-    # BUG-LEDGER: remove-repeated-ngrams-zero
-    def test_bug_unigram_slice_zero_returns_whole_list(self) -> None:
-        """
-        For n=1 the slice is ``[-0:]``, the whole list, not ``[]``.
-
-        The output is the same as the intended one, because for a unigram
-        both branches add the same word. Expected: slice ``[len - (n - 1):]``.
-        """
+    def test_unigram_overlap_is_empty(self) -> None:
+        # For n=1 the overlap with the previous n-gram is empty, not the
+        # whole output (formerly the slice [-0:]).
         self.assertEqual(
             remove_repeated_ngrams(["a", "b", "a", "c"], 1), ["a", "b", "c"]
         )
 
-    # BUG-LEDGER: remove-repeated-ngrams-tail
-    def test_bug_n_longer_than_list_repeats_words(self) -> None:
-        """Tail words are re-added after the last n-gram; expected: no repeat."""
-        self.assertEqual(
-            remove_repeated_ngrams(["a", "b", "c"], 5),
-            ["a", "b", "c", "b", "c"],
-        )
+    def test_n_longer_than_list(self) -> None:
+        # No full n-gram: the words are kept once, without adjacent repeats.
+        for words, n, expected in (
+            (["a", "b", "c"], 5, ["a", "b", "c"]),
+            (["a", "b", "c"], 4, ["a", "b", "c"]),
+            (["a", "a", "b"], 4, ["a", "b"]),
+            (["a"], 2, ["a"]),
+        ):
+            with self.subTest(words=words, n=n):
+                self.assertEqual(remove_repeated_ngrams(words, n), expected)
 
 
 if __name__ == "__main__":

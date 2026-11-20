@@ -53,9 +53,16 @@ def remove_repeated_ngrams(string_list: list[str], n: int = 2) -> list[str]:
     if not string_list or n <= 0:
         return string_list
 
+    output_list: list[str]
+    if len(string_list) < n:
+        # No full n-gram: keep the words once, skipping adjacent repeats.
+        output_list = []
+        _add_tail(output_list, string_list)
+        return output_list
+
     unique_ngrams: set[tuple[str, ...]] = set()
 
-    output_list: list[str] = []
+    output_list = []
 
     for i in range(len(string_list)):
         if i + n <= len(string_list):
@@ -72,7 +79,8 @@ def remove_repeated_ngrams(string_list: list[str], n: int = 2) -> list[str]:
 
 def _add_ngram(output_list: list[str], ngram: tuple[str, ...], n: int) -> None:
     """Add an n-gram, skipping the part that overlaps the output."""
-    if not output_list or output_list[-(n - 1) :] != list(ngram[:-1]):
+    overlap = output_list[len(output_list) - (n - 1) :]
+    if not output_list or overlap != list(ngram[:-1]):
         output_list.extend(ngram)
     else:
         output_list.append(ngram[-1])
