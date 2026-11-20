@@ -464,23 +464,22 @@ class KhaveeVerifier:
     @staticmethod
     def _apply_mai_taikhu(sara: list[str]) -> None:
         """
-        Resolve one ไม้ไต่คู้ (-็) into a short vowel in place.
+        Resolve each ไม้ไต่คู้ (-็) into a short vowel in place.
 
         :param list[str] sara: vowel sounds, modified in place
         """
-        if "็" not in sara:
-            return
-        sara.remove("็")
-        if "เอ" in sara:
-            sara.remove("เอ")
-            sara.append("เอะ")  # เจ็ด, เป็น, เด็ก
-        elif "แอ" in sara:
-            sara.remove("แอ")
-            sara.append("แอะ")  # แข็ง, แท็กซี่, แย็บ
-        else:
-            if "ออ" in sara:
-                sara.remove("ออ")
-            sara.append("เอาะ")  # ก็, ล็อก, ผล็อย
+        while "็" in sara:
+            sara.remove("็")
+            if "เอ" in sara:
+                sara.remove("เอ")
+                sara.append("เอะ")  # เจ็ด, เป็น, เด็ก
+            elif "แอ" in sara:
+                sara.remove("แอ")
+                sara.append("แอะ")  # แข็ง, แท็กซี่, แย็บ
+            else:
+                if "ออ" in sara:
+                    sara.remove("ออ")
+                sara.append("เอาะ")  # ก็, ล็อก, ผล็อย
 
     def _merge_vowel_signs(
         self, sara: list[str], word: str, word_req: str

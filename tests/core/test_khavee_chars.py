@@ -182,7 +182,7 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("เลียม", "เอีย", "กม", True, "karu"),
     ("เบิกโลง", "โอ", "กง", True, "karu"),
     ("เรียนพิเศษ", "อี", "กด", True, "karu"),
-    ("ย็อก ๆ แย็ก ๆ", "็", "กา", True, "lahu"),
+    ("ย็อก ๆ แย็ก ๆ", "แอะ", "กา", True, "lahu"),
     ("กำลังกินกำลังนอน", "อำ", "กน", True, "karu"),
     ("เพชรตัดเพชร", "แอะ", "กด", True, "karu"),
     ("เอนกาย", "เอา", "เกย", True, "karu"),
@@ -221,7 +221,7 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("กระดาษเทศ", "เอาะ", "กด", True, "karu"),
     ("ทะเลาะเบาะแว้ง", "เอาะ", "กง", True, "karu"),
     ("ระวาดระไว", "อะ", "เกอว", True, "karu"),
-    ("ว็อบแว็บ", "็", "กบ", True, "karu"),
+    ("ว็อบแว็บ", "แอะ", "กบ", True, "karu"),
     ("พักแรม", "แอะ", "กม", True, "karu"),
     ("เซ็ง", "เอะ", "กง", True, "karu"),
     ("เสาธง", "เอา", "กง", True, "karu"),
@@ -245,13 +245,13 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("มหาเมฆ", "เอา", "กก", True, "karu"),
     ("อำนรรฆ", "อำ", "กก", True, "karu"),
     ("เด็กน้อย", "เออะ", "เกย", True, "karu"),
-    ("ฮ็อตด็อก", "็", "กก", True, "karu"),
+    ("ฮ็อตด็อก", "เอาะ", "กก", True, "karu"),
     ("มือตก", "อือ", "กก", True, "karu"),
     ("พระสนมเอก", "เออะ", "กก", True, "karu"),
     ("สาระสังเขป", "เอาะ", "กบ", True, "karu"),
     ("หลงลืม", "อือ", "กม", True, "karu"),
     ("เพชรซีก", "เอีย", "กก", True, "karu"),
-    ("เป็นหลักเป็นฐาน", "็", "กน", True, "karu"),
+    ("เป็นหลักเป็นฐาน", "อา", "กน", True, "karu"),
     ("พืชใบเลี้ยงเดี่ยว", "อือ", "เกอว", True, "karu"),
     ("ตื่นตาย", "อือ", "เกย", True, "karu"),
     ("อ่อนเปลี้ย", "ออ", "กา", False, "karu"),
@@ -260,8 +260,8 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("ระเบียบวาระการประชุม", "เอาะ", "กม", True, "karu"),
     ("กระดาษโรเนียว", "เอาะ", "เกอว", True, "karu"),
     ("เป่ากบ", "เอา", "กบ", True, "karu"),
-    ("กลเม็ดเด็ดพราย", "็", "เกย", True, "karu"),
-    ("หน็องแหน็ง", "็", "กง", True, "karu"),
+    ("กลเม็ดเด็ดพราย", "อา", "เกย", True, "karu"),
+    ("หน็องแหน็ง", "แอะ", "กง", True, "karu"),
     ("มอเตอร์เวย์", "ออ", "เกอว", True, "karu"),
     ("โฌํ่", "อะ", "กง", False, "karu"),
     ("ว", "อัว", "กา", False, "karu"),
@@ -272,13 +272,13 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("โฅะ้ว", "โอะ", "เกอว", True, "karu"),
     ("เฮหะย", "เอะ", "เกย", True, "karu"),
     ("เษิ๊", "เออ", "กา", False, "karu"),
-    ("ฮ็็จลิ่ฐ", "็", "กด", True, "karu"),
-    ("น็็", "็", "กา", False, "lahu"),
-    ("น็็ว", "็", "เกอว", True, "karu"),
+    ("ฮ็็จลิ่ฐ", "อิ", "กด", True, "karu"),
+    ("น็็", "เอาะ", "กา", False, "lahu"),
+    ("น็็ว", "เอาะ", "เกอว", True, "karu"),
     ("เฐิ้ว", "เออ", "เกอว", True, "karu"),
     ("แธ็อย", "แอะ", "เกย", True, "karu"),
     ("๊อะ๘เ", "เออะ", "กา", False, "lahu"),
-    ("ซ็็๋มำม", "็", "กม", True, "karu"),
+    ("ซ็็๋มำม", "อำ", "กม", True, "karu"),
     ("หูื๋ฑแฎซๅ้ย", "อู", "เกย", True, "karu"),
     ("ฅึ็ะถ", "อึ", "กด", True, "karu"),
     ("โศออํธ", "อะ", "กด", True, "karu"),
@@ -987,7 +987,7 @@ _ALPHABET = "".join(
 )
 # SHA-256 over all one- and two-character strings of _ALPHABET
 _ALPHABET_DIGEST = (
-    "818b51338c55a0b9659fbc2dbef9ea8d8d588792b8d9e34d8cd495a4047d54b8"
+    "3ce1cef749529d5dff6bda296105680a3350cccd07f0f31c0ba13d229a4eb053"
 )
 # Every 31st word of the same sequence, as (word, sara, marttra,
 # true final, karu-lahu). Shows the failing words if the digest differs.
@@ -1281,12 +1281,16 @@ class KhaveeWordCharacterizationTestCase(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.kv.check_aek_too(1)  # type: ignore[arg-type]
 
-    def test_sara_leftover_mai_taikhu(self) -> None:
-        # BUG-LEDGER: khavee-sara-leftover-maitaikhu
-        # Only one ไม้ไต่คู้ (U+0E47) is consumed, so a word with two of them
-        # returns the bare mark instead of a vowel name.
-        self.assertEqual(self.kv.check_sara("ก็็"), "็")
-        self.assertEqual(self.kv.check_sara("ฮ็อตด็อก"), "็")
+    def test_sara_every_mai_taikhu_resolved(self) -> None:
+        # Each ไม้ไต่คู้ (U+0E47) becomes a short vowel; none is left bare.
+        for word, expected in (
+            ("ก็็", "เอาะ"),
+            ("ฮ็อตด็อก", "เอาะ"),
+            ("ซ็อกเก็ต", "เอะ"),
+            ("แบ็กแพ็ก", "แอะ"),
+        ):
+            with self.subTest(word=word):
+                self.assertEqual(self.kv.check_sara(word), expected)
 
     def test_sumpus_of_empty_after_stripping(self) -> None:
         # BUG-LEDGER: khavee-sumpus-empty-after-strip

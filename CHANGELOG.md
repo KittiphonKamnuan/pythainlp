@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `KhaveeVerifier.check_sara()`: each ไม้ไต่คู้ becomes a vowel, so a word
+  with two no longer returns the bare mark "็"
+
 ## [5.4.0] - 2026-10-09
 
 ### Added
