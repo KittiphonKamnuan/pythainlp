@@ -42,13 +42,13 @@ def nighit(w1: str, w2: str) -> str:
     Reference:
     https://www.trueplookpanya.com/learning/detail/1180
 
-    :param str w1: Thai word ending with a nighit (ํ)
+    :param str w1: one Thai consonant followed by a nighit (ํ), such as "สํ"
     :param str w2: Thai word to be combined with ``w1``
     :return: combined Thai word
     :rtype: str
     :raises TypeError: if ``w1`` or ``w2`` is not a string
-    :raises NotImplementedError: if ``w1`` does not end with ํ, or the
-        first consonant of ``w2`` is not supported
+    :raises NotImplementedError: if ``w1`` is not one Thai consonant
+        followed by ํ, or the first consonant of ``w2`` is not supported
     :raises ValueError: if ``w2`` contains no Thai consonant
 
     :Example:
@@ -79,23 +79,22 @@ def nighit(w1: str, w2: str) -> str:
         return w2
     if not w2:
         return w1
-    if not w1.endswith("ํ"):
-        raise NotImplementedError(f"The function doesn't support {w1}.")
-    list_w1 = list(w1)
-    list_w2 = list(w2)
-    newword = []
-    newword.append(list_w1[0])
-    newword.append("ั")
     _consonants = set(thai_consonants)
+    # w1 is one consonant and ํ, such as "สํ"; a longer stem is not
+    # supported, and a bare ํ has no consonant.
+    if len(w1) != 2 or w1[0] not in _consonants or w1[1] != "ํ":
+        raise NotImplementedError(f"The function doesn't support {w1}.")
+    list_w2 = list(w2)
+    newword = [w1[0], "ั"]
     consonants_in_w2 = [i for i in list_w2 if i in _consonants]
     if not consonants_in_w2:
         raise ValueError(f"w2 {w2!r} contains no Thai consonants.")
     consonant_start = consonants_in_w2[0]
     ending = _nighit_ending(consonant_start)
     if ending is None:
-        raise NotImplementedError(f"""
-        The function doesn't support {w1} and {w2}.
-        """)
+        raise NotImplementedError(
+            f"The function doesn't support {w1} and {w2}."
+        )
     newword.append(ending)
     newword.extend(list_w2)
     return "".join(newword)

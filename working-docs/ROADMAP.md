@@ -228,18 +228,6 @@ Entry format:
 - **`ngram-gen-flatten-dedup`** `pythainlp/generate/core.py`:
   `Trigram.gen_sentence`. Flattening the output drops repeated words, so
   `duplicate=True` has no effect. Expected: keep repeated words.
-- **`nighit-w1-prefix`** `pythainlp/morpheme/word_formation.py`: `nighit`.
-  Only the first character of `w1` is used. `nighit("สงฆํ", "คา")` returns
-  "สังคา", the same as `nighit("สํ", "คา")`; the characters between the
-  first one and "ํ" are dropped. Expected: keep the stem or reject it.
-  A bare "ํ" is also accepted: `nighit("ํ", "คา")` returns "ํังคา".
-  Expected: require a consonant before "ํ".
-  Pinning test: `test_w1_prefix_dropped`.
-- **`nighit-message-format`** `pythainlp/morpheme/word_formation.py`:
-  `nighit`. The `NotImplementedError` message for an unsupported `w2`
-  consonant has a newline and indentation inside. Expected: a one-line
-  message like the one for `w1`.
-  Pinning tests: `ADVERSARIAL` and `test_unsupported_consonants`.
 
 ### Docstring and doctest issues
 

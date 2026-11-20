@@ -135,17 +135,9 @@ ADVERSARIAL: list[list[Any]] = [
     ["สํ", "คายคา" * 2000, ["ok", "สัง" + "คายคา" * 2000]],
     ["สํ", "ก" * 5000, ["ok", "สัง" + "ก" * 5000]],
     ["\tสํ ", "คา", ["ok", "สังคา"]],
-    [
-        "กขํ",
-        "ซา",
-        [
-            "exc",
-            NIE,
-            # BUG-LEDGER: nighit-message-format
-            # Expected: a one-line message.
-            "\n        The function doesn't support กขํ and ซา.\n        ",
-        ],
-    ],
+    # A w1 longer than one consonant and ํ is rejected first.
+    ["กขํ", "ซา", ["exc", NIE, UNSUPPORTED.format("กขํ")]],
+    ["กํ", "ซา", ["exc", NIE, "The function doesn't support กํ and ซา."]],
     ["abc", "123", ["exc", NIE, UNSUPPORTED.format("abc")]],
     ["สําา", "คา", ["exc", NIE, UNSUPPORTED.format("สําา")]],
     ["ก", "123", ["exc", NIE, UNSUPPORTED.format("ก")]],
@@ -187,7 +179,7 @@ GRID_W2 = (
 CHANGED_CONSONANTS = frozenset("ชฆญฏฒตม")
 GRID_SIZE = 549
 GRID_DIGEST = (
-    "37ef3bd348e6a35d3d326f920016b426d5b58e506de2f6b93c4339f9648ccaad"
+    "a7150b6013643c4ced4fa9b54d49895ff64d6f24ea19b96bb1a05519d33bd650"
 )
 
 
@@ -214,11 +206,9 @@ class NighitCharacterizationTestCase(unittest.TestCase):
                 if ending is None:
                     with self.assertRaises(NotImplementedError) as ctx:
                         nighit("สํ", w2)
-                    # BUG-LEDGER: nighit-message-format
                     self.assertEqual(
                         str(ctx.exception),
-                        "\n        The function doesn't support "
-                        f"สํ and {w2}.\n        ",
+                        f"The function doesn't support สํ and {w2}.",
                     )
                 else:
                     self.assertEqual(nighit("สํ", w2), "สั" + ending + w2)
@@ -293,15 +283,15 @@ class NighitCharacterizationTestCase(unittest.TestCase):
         for row, _ in _NIGHIT_ENDINGS:
             self.assertEqual(list(row), sorted(row, key=thai_consonants.index))
 
-    def test_w1_prefix_dropped(self) -> None:
-        # BUG-LEDGER: nighit-w1-prefix
-        # Only the first character of w1 is used, so characters between it
-        # and ํ are silently dropped.
-        # Expected: keep the stem or reject it.
-        self.assertEqual(nighit("สงฆํ", "คา"), "สังคา")
-        self.assertEqual(nighit("สงฆํ", "คา"), nighit("สํ", "คา"))
-        # A bare ํ is accepted too. Expected: reject it.
-        self.assertEqual(nighit("ํ", "คา"), "ํังคา")
+    def test_w1_must_be_one_consonant_and_nighit(self) -> None:
+        # A longer stem was cut to its first consonant ("สงฆํ" acted as
+        # "สํ"), and a bare ํ was accepted; both are now rejected.
+        for w1 in ("สงฆํ", "ํ", "กขํ", "ํก", "aํ"):
+            with self.subTest(w1=w1):
+                with self.assertRaises(NotImplementedError) as ctx:
+                    nighit(w1, "คา")
+                self.assertEqual(str(ctx.exception), UNSUPPORTED.format(w1))
+        self.assertEqual(nighit("สํ", "คา"), "สังคา")
 
 
 if __name__ == "__main__":

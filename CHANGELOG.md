@@ -17,6 +17,14 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `nighit()`: `w1` must be one Thai consonant followed by "ํ"; a longer
+  stem or a bare "ํ" raises `NotImplementedError`, and the message for an
+  unsupported `w2` is on one line
+
 ## [5.4.0] - 2026-10-09
 
 ### Added
