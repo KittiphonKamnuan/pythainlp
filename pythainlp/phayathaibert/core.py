@@ -349,7 +349,7 @@ class ThaiTextAugmenter:
             ... )  # doctest: +SKIP
 
             >>> aug = ThaiTextAugmenter()  # doctest: +SKIP
-            >>> aug.augment("ช้างมีทั้งหมด 50 ตัว บน", num_args=5)  # doctest: +SKIP
+            >>> aug.augment("ช้างมีทั้งหมด 50 ตัว บน", num_augs=5)  # doctest: +SKIP
 
             ['ช้างมีทั้งหมด 50 ตัว บนโลกใบนี้ครับ.',
                 'ช้างมีทั้งหมด 50 ตัว บนพื้นดินครับ...',
@@ -507,7 +507,9 @@ class NamedEntityTagger:
             [('นายปวริศ เรืองจุติโพธิ์พานจากประเทศไทย', 'PERSON'),
             ('จาก', 'LOCATION'),
             ('ประเทศไทย', 'LOCATION')]
-            >>> ner.tag("ทดสอบนายปวริศ เรืองจุติโพธิ์พานจากประเทศไทย", tag=True)
+            >>> tagger.get_ner(
+            ...     "ทดสอบนายปวริศ เรืองจุติโพธิ์พานจากประเทศไทย", tag=True
+            ... )
             'ทดสอบ<PERSON>นายปวริศ เรืองจุติโพธิ์พาน</PERSON><LOCATION>จาก</LOCATION><LOCATION>ประเทศไทย</LOCATION>'
         """
         from transformers import TokenClassificationPipeline

@@ -103,7 +103,7 @@ class ThaiTextAugmenter:
             ... )  # doctest: +SKIP
 
             >>> aug = ThaiTextAugmenter()  # doctest: +SKIP
-            >>> aug.augment("ช้างมีทั้งหมด 50 ตัว บน", num_args=5)  # doctest: +SKIP
+            >>> aug.augment("ช้างมีทั้งหมด 50 ตัว บน", num_augs=5)  # doctest: +SKIP
 
             ['ช้างมีทั้งหมด 50 ตัว บนโลกใบนี้ครับ.',
                 'ช้างมีทั้งหมด 50 ตัว บนพื้นดินครับ...',

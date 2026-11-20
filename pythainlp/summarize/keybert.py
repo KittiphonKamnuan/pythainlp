@@ -106,7 +106,7 @@ class KeyBERT:
 
             >>> kb = KeyBERT()  # doctest: +SKIP
 
-            >>> keywords = kb.extract_keyword(text)  # doctest: +SKIP
+            >>> keywords = kb.extract_keywords(text)  # doctest: +SKIP
 
             ['อวัยวะต่างๆ',
             'ซ่อมแซมส่วน',
@@ -114,7 +114,7 @@ class KeyBERT:
             'ควบคุมการเปลี่ยนแปลง',
             'มีพิษ']
 
-            >>> keywords = kb.extract_keyword(  # doctest: +SKIP
+            >>> keywords = kb.extract_keywords(  # doctest: +SKIP
             ...     text, max_keywords=10, return_similarity=True
             ... )
 

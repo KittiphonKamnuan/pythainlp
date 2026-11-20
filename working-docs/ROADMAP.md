@@ -248,26 +248,17 @@ the code disagree. The code was not changed. No test pins them.
 
 #### Wrong or non-runnable doctests
 
-- `phayathaibert.NamedEntityTagger.get_ner`: the doctest calls `ner.tag(...)`.
-  No `ner` object and no `tag` method exist.
-- `phayathaibert.ThaiTextAugmenter.augment` and
-  `augment.lm.phayathaibert`: the doctest passes `num_args=5`. The
-  parameter is `num_augs`.
 - `phayathaibert.ThaiTextProcessor`: the doctests of `replace_url`,
   `rm_brackets`, `rm_useless_spaces`, `replace_spaces`,
   `replace_rep_after`, `replace_wrep_post`, `remove_space`, and
   `replace_newlines` call bare names. They are methods. Some outputs are
   unquoted, and the `replace_spaces` doctest ignores the default
   `space_token` (`<_>`).
-- `ulmfit.replace_wrep_post`: the doctest imports `replace_wrep_post_nonum`
-  but calls `replace_wrep_post`.
 - `ulmfit.process_thai`: the doctest has multi-line `>>>` calls without
   `...` prompts. A `:Note:` names `pythainlp.util.normalize`, but the rules
   use `reorder_vowels`.
 - `word_vector.most_similar_cosmul` and `doesnt_match`: some outputs
   probably do not match a real run.
-- `summarize.keybert`: the doctest calls `kb.extract_keyword(...)`. The
-  method is `extract_keywords`.
 - `transliterate.pali.pronunciate_pali("สฺวากฺขา")`: the doctest expects
   "สวากขาโต" and gets "สวากขา".
 - `transliterate.romanize("ก็อปปี้", engine="lookup")`: the doctest expects

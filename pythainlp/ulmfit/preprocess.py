@@ -130,7 +130,7 @@ def replace_wrep_post(toks: Collection[str]) -> list[str]:
 
     :Example:
 
-        >>> from pythainlp.ulmfit import replace_wrep_post_nonum
+        >>> from pythainlp.ulmfit import replace_wrep_post
         >>>
         >>> toks = ["กา", "น้ำ", "น้ำ", "น้ำ", "น้ำ"]
         >>> replace_wrep_post(toks)
