@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `count_thai_chars()`: "ฤ" and "ฦ" count in "vowels" only, not also in
+  "non_thai"
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

@@ -339,11 +339,16 @@ _COUNTER_MIN_LEN: int = 64
 
 
 def _char_type(char: str) -> str:
-    """Return the name of the first character type containing ``char``."""
+    """
+    Return the name of the first character type containing ``char``.
+
+    Return "" for a vowel with no sub-type ("ฤ", "ฦ"), and "non_thai"
+    for any other character with no type.
+    """
     for name, chars in _CHAR_TYPES:
         if char in chars:
             return name
-    return "non_thai"
+    return "" if char in thai_vowels else "non_thai"
 
 
 def _count_iterable(
@@ -353,8 +358,25 @@ def _count_iterable(
     for c in text:
         if c in thai_vowels:
             counts["vowels"] += 1
-        counts[_char_type(c)] += 1
+        char_type = _char_type(c)
+        if char_type:
+            counts[char_type] += 1
     return counts
+
+
+def _add_char(counts: dict[str, int], char: str, num: int) -> None:
+    """
+    Add ``num`` occurrences of ``char`` to ``counts``.
+
+    A vowel with no sub-type ("ฤ", "ฦ") counts in "vowels" only.
+    """
+    char_type = _CHAR_TYPE_TABLE.get(char)
+    if char in _VOWEL_SET:
+        counts["vowels"] += num
+    elif char_type is None:
+        char_type = "non_thai"
+    if char_type is not None:
+        counts[char_type] += num
 
 
 def count_thai_chars(text: str) -> dict[str, int]:
@@ -383,16 +405,11 @@ def count_thai_chars(text: str) -> dict[str, int]:
         # Tolerate non-str iterables.
         return _count_iterable(text, counts)  # type: ignore[unreachable]
     if len(text) < _COUNTER_MIN_LEN:
-        type_of = _CHAR_TYPE_TABLE.get
         for char in text:
-            counts[type_of(char, "non_thai")] += 1
-            if char in _VOWEL_SET:
-                counts["vowels"] += 1
+            _add_char(counts, char, 1)
         return counts
     for char, num in Counter(text).items():
-        if char in _VOWEL_SET:
-            counts["vowels"] += num
-        counts[_CHAR_TYPE_TABLE.get(char, "non_thai")] += num
+        _add_char(counts, char, num)
     return counts
 
 

@@ -38,7 +38,7 @@ _SINGLE_CHAR = [
         ),
     ),
     (("consonants",), "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ"),
-    (("vowels", "non_thai"), "ฤฦ"),
+    (("vowels",), "ฤฦ"),
     (("signs",), "ฯฺๆ์๎"),
     (("vowels", "follow_vowels"), "ะาำๅ"),
     (("vowels", "above_vowels"), "ัิีึื็ํ"),
@@ -53,9 +53,9 @@ _SINGLE_CHAR = [
 _TEXTS = [
     ("ทดสอบภาษาไทย", (3, 1, 2, 0, 0, 9, 0, 0, 0, 0, 0)),
     ("", (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)),
-    ("สวัสดี ๑๒๓ abc ฯ ๏ ่ ฤ", (3, 0, 0, 2, 0, 4, 1, 1, 3, 1, 10)),
-    ("ฤๅษี", (3, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1)),
-    (["ก", "ที", "", "ฤ"], (2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 2)),
+    ("สวัสดี ๑๒๓ abc ฯ ๏ ่ ฤ", (3, 0, 0, 2, 0, 4, 1, 1, 3, 1, 9)),
+    ("ฤๅษี", (3, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0)),
+    (["ก", "ที", "", "ฤ"], (2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
     ("เเปลก", (2, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0)),
     ("ๆ๛ๅ", (1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0)),
     (
@@ -120,18 +120,17 @@ class CountThaiCharsTestCase(unittest.TestCase):
             },
         )
 
-    # BUG-LEDGER: count-thai-chars-double
-    def test_bug_chars_counted_twice(self) -> None:
-        # Expected: "ฤ" and "ฦ" are counted once. Currently they count
-        # as "vowels" and also as "non_thai".
-        for char in "ฤฦ":
-            with self.subTest(char=char):
-                result = count_thai_chars(char)
-                self.assertEqual(result["vowels"], 1)
-                self.assertEqual(result["non_thai"], 1)
+    def test_vowels_without_sub_type_counted_once(self) -> None:
+        # "ฤ" and "ฦ" have no vowel sub-type; they count in "vowels" only.
+        for text in ("ฤ", "ฦ", "ฤ" * 100, ["ฤ"]):
+            with self.subTest(text=text[:3]):
+                result = count_thai_chars(text)  # type: ignore[arg-type]
+                self.assertEqual(result["vowels"], len(text))
+                self.assertEqual(sum(result.values()), len(text))
+        self.assertEqual(_counts("ฤๅ"), (2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0))
         # Every other vowel is counted in "vowels" and in one sub-category,
         # and an empty string element counts as "vowels" and "lead_vowels".
-        self.assertEqual(_counts(["", "ฤ"]), (2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1))
+        self.assertEqual(_counts(["", "ฤ"]), (2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
     def test_invalid_input(self) -> None:
         for value in (None, 5):

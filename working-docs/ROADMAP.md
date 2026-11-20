@@ -142,8 +142,6 @@ Entry format:
   Input with "ตี" has no break after it.
 - **`thai-strptime-m-y`** `pythainlp/util/date.py`: `thai_strptime`.
   Directives `%m` and `%y` are handled incorrectly.
-- **`count-thai-chars-double`** `pythainlp/util/thai.py`: `count_thai_chars`.
-  Some characters are counted twice.
 - **`numtoword-ed-duplicate`** `pythainlp/util/numtoword.py`.
   The "เอ็ด" rule is applied in both `_num_to_thaiword_block` and
   `num_to_thaiword`. Results are correct; the code is redundant.
