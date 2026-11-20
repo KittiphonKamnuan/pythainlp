@@ -33,8 +33,8 @@ def _pick_next(
     """
     Pick a random candidate whose probability is at least ``prob``.
 
-    The pick is by probability value, so candidates with equal
-    probability resolve to the first of them.
+    Every passing candidate is equally likely, including candidates with
+    equal probability.
 
     :param Sequence[_T] candidates: candidates, parallel to ``probs``
     :param Sequence[float] probs: probability of each candidate
@@ -42,11 +42,11 @@ def _pick_next(
     :return: picked candidate, or None if no probability passes
     :rtype: Optional[_T]
     """
-    passed = [j for j in probs if j >= prob]
+    passed = [c for c, p in zip(candidates, probs) if p >= prob]
     if not passed:
         return None
     # Non-cryptographic use, pseudo-random generator is acceptable here
-    return candidates[probs.index(random.choice(passed))]  # noqa: S311  # nosec B311  # NOSONAR
+    return random.choice(passed)  # noqa: S311  # nosec B311  # NOSONAR
 
 
 class Unigram:
@@ -342,7 +342,10 @@ class Trigram:
             late_word = items[1:]
             list_word.append(late_word)
 
-        listdata = _flatten_unique(list_word)
+        if duplicate:
+            listdata = _flatten_ngrams(list_word)
+        else:
+            listdata = _flatten_unique(list_word)
 
         if output_str:
             return "".join(listdata)
@@ -363,6 +366,28 @@ class Trigram:
             for j in self.ti_keys
             if j[:2] == late_word and j[1:] not in list_word
         ]
+
+
+def _flatten_ngrams(items: Sequence[object]) -> list[str]:
+    """
+    Flatten a start item and the overlapping word tuples after it.
+
+    Each tuple after the first item shares all but its last word with the
+    text so far, so only its last word is new. Repeated words are kept.
+    """
+    if not items:
+        return []
+    first = items[0]
+    if isinstance(first, tuple):
+        listdata: list[str] = list(first)
+    elif isinstance(first, str):
+        listdata = [first]
+    else:
+        listdata = []
+    for item in items[1:]:
+        if isinstance(item, tuple) and item:
+            listdata.append(item[-1])
+    return listdata
 
 
 def _flatten_unique(items: Sequence[object]) -> list[str]:

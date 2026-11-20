@@ -107,19 +107,16 @@ class BigramGoldenTestCase(unittest.TestCase):
         self.model.uni["a"] = 0
         self.assertEqual(self.model.prob("a", "b"), 0.0)
 
-    # BUG-LEDGER: ngram-gen-tie-bias
-    def test_bug_equal_probabilities_always_pick_first_candidate(self) -> None:
-        """probs.index(random.choice(p2)) ignores ties; expected: random."""
+    def test_equal_probabilities_pick_any_candidate(self) -> None:
         model = make_model()
         model.uni = {"x": 4, "p": 2, "q": 2}
         model.bi = {("x", "p"): 2, ("x", "q"): 2}
         model.bi_keys = list(model.bi)
+        outputs = set()
         for seed in range(20):
-            with self.subTest(seed=seed):
-                random.seed(seed)
-                self.assertEqual(
-                    model.gen_sentence("x", 1, 0.0001, False), ["x", "p"]
-                )
+            random.seed(seed)
+            outputs.add(tuple(model.gen_sentence("x", 1, 0.0001, False)))
+        self.assertEqual(outputs, {("x", "p"), ("x", "q")})
 
 
 class PickNextTestCase(unittest.TestCase):

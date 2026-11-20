@@ -221,13 +221,6 @@ Entry format:
   `remove_repeated_ngrams`. With `n` longer than the list,
   `(["a","b","c"], 5)` returns `["a","b","c","b","c"]`. Expected:
   `["a","b","c"]`.
-- **`ngram-gen-tie-bias`** `pythainlp/generate/core.py`:
-  `Trigram.gen_sentence` and `Bigram.gen_sentence`. With equal
-  probabilities, `probs.index(random.choice(...))` always picks the first
-  candidate. Expected: a random choice among ties.
-- **`ngram-gen-flatten-dedup`** `pythainlp/generate/core.py`:
-  `Trigram.gen_sentence`. Flattening the output drops repeated words, so
-  `duplicate=True` has no effect. Expected: keep repeated words.
 - **`nighit-w1-prefix`** `pythainlp/morpheme/word_formation.py`: `nighit`.
   Only the first character of `w1` is used. `nighit("สงฆํ", "คา")` returns
   "สังคา", the same as `nighit("สํ", "คา")`; the characters between the

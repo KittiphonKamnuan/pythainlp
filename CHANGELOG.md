@@ -17,6 +17,14 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `Bigram.gen_sentence()` and `Trigram.gen_sentence()`: candidates with
+  equal probability are picked at random, not always the first;
+  `Trigram.gen_sentence(duplicate=True)` keeps repeated words
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

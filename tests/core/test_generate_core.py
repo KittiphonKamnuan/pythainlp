@@ -68,33 +68,73 @@ GOLDEN: list[list[Any]] = [
     [("a", "b"), 0, 0.001, True, False, 54, ["ok", "ab"]],
     [("q", "r"), 1, 0.001, True, False, 43, ["exc", "KeyError", "('q', 'r')"]],
     ["a", 0, 0.001, True, False, 69, ["ok", "a"]],
-    [("c", "a"), 3, 0.001, True, True, 17, ["ok", "cabd"]],
+    [("c", "a"), 3, 0.001, True, True, 17, ["ok", "cacca"]],
     [None, 6, 0.5, False, False, 48, ["ok", ["d", "a", "b", "c"]]],
     ["", 3, 0.001, False, False, 33, ["ok", ["b", "d", "a", "c"]]],
     [(), 6, 0.5, False, False, 7, ["ok", ["d", "a", "b", "c"]]],
-    [None, 6, 0.001, True, True, 84, ["ok", "acbd"]],
-    [("a", "b"), 6, 0.001, True, True, 91, ["ok", "abcd"]],
+    [None, 6, 0.001, True, True, 84, ["ok", "acacacac"]],
+    [("a", "b"), 6, 0.001, True, True, 91, ["ok", "abcabdab"]],
     [("c", "c"), 6, 0.001, False, False, 48, ["ok", ["c", "a", "b", "d"]]],
-    [(), 6, 0.001, True, True, 53, ["ok", "cabd"]],
-    ["", 6, 0.001, False, True, 60, ["ok", ["a", "c", "b", "d"]]],
-    ["", 3, 0.001, True, True, 97, ["ok", "cabd"]],
-    [("b", "c"), 6, 0.001, True, False, 77, ["ok", "bcad"]],
+    [(), 6, 0.001, True, True, 53, ["ok", "caccacab"]],
+    [
+        "",
+        6,
+        0.001,
+        False,
+        True,
+        60,
+        ["ok", ["a", "c", "c", "c", "a", "b", "d", "a"]],
+    ],
+    ["", 3, 0.001, True, True, 97, ["ok", "caccc"]],
+    [("b", "c"), 6, 0.001, True, False, 77, ["ok", "bca"]],
     [("c", "a"), 3, 0.001, True, False, 79, ["ok", "cabd"]],
-    [(), 3, 0.5, True, True, 76, ["ok", "dabc"]],
+    [(), 3, 0.5, True, True, 76, ["ok", "dabca"]],
     [("b", "c"), 6, 0.001, False, False, 78, ["ok", ["b", "c", "a", "d"]]],
-    [("c", "a"), 6, 0.001, True, True, 45, ["ok", "cabd"]],
-    [None, 6, 0.001, False, True, 48, ["ok", ["d", "a", "b", "c"]]],
-    [("c", "a"), 6, 0.001, False, True, 86, ["ok", ["c", "a", "b", "d"]]],
-    [(), 6, 0.001, False, True, 10, ["ok", ["a", "b", "d", "c"]]],
-    ["", 3, 0.001, True, False, 60, ["ok", "acbd"]],
-    ["", 6, 0.5, True, True, 76, ["ok", "dabc"]],
-    [None, 3, 0.001, False, True, 5, ["ok", ["a", "c", "b", "d"]]],
-    ["", 6, 0.001, True, True, 34, ["ok", "dabc"]],
-    ["", 6, 0.001, True, False, 60, ["ok", "acbd"]],
-    [("b", "c"), 6, 0.001, False, True, 19, ["ok", ["b", "c", "a", "d"]]],
+    [("c", "a"), 6, 0.001, True, True, 45, ["ok", "caccacac"]],
+    [
+        None,
+        6,
+        0.001,
+        False,
+        True,
+        48,
+        ["ok", ["d", "a", "b", "d", "a", "b", "c", "a"]],
+    ],
+    [
+        ("c", "a"),
+        6,
+        0.001,
+        False,
+        True,
+        86,
+        ["ok", ["c", "a", "b", "d", "a", "b", "d", "a"]],
+    ],
+    [
+        (),
+        6,
+        0.001,
+        False,
+        True,
+        10,
+        ["ok", ["a", "b", "d", "a", "b", "c", "a", "c"]],
+    ],
+    ["", 3, 0.001, True, False, 60, ["ok", "acb"]],
+    ["", 6, 0.5, True, True, 76, ["ok", "dabcacac"]],
+    [None, 3, 0.001, False, True, 5, ["ok", ["a", "c", "c", "c", "a"]]],
+    ["", 6, 0.001, True, True, 34, ["ok", "dabcaccc"]],
+    ["", 6, 0.001, True, False, 60, ["ok", "acb"]],
+    [
+        ("b", "c"),
+        6,
+        0.001,
+        False,
+        True,
+        19,
+        ["ok", ["b", "c", "a", "b", "c", "a", "c", "c"]],
+    ],
     [None, 3, 0.001, False, False, 33, ["ok", ["b", "d", "a", "c"]]],
-    [(), 3, 0.001, False, False, 67, ["ok", ["b", "c", "a", "d"]]],
-    [("b", "c"), 3, 0.001, False, False, 54, ["ok", ["b", "c", "a", "d"]]],
+    [(), 3, 0.001, False, False, 67, ["ok", ["b", "c", "a"]]],
+    [("b", "c"), 3, 0.001, False, False, 54, ["ok", ["b", "c", "a"]]],
     [(), 6, 0.001, True, False, 95, ["ok", "bdac"]],
     [
         ("q", "r"),
@@ -160,27 +200,25 @@ class TrigramGenSentenceTestCase(unittest.TestCase):
         result = self.model.gen_sentence(("a", "b"), 0)
         self.assertEqual(result, "ab")
 
-    # BUG-LEDGER: ngram-gen-tie-bias
-    def test_bug_equal_probabilities_always_pick_first_candidate(self) -> None:
-        """``probs.index(random.choice(p2))`` ignores ties; expected: random."""
+    def test_equal_probabilities_pick_any_candidate(self) -> None:
+        outputs = set()
         for seed in range(20):
-            with self.subTest(seed=seed):
-                random.seed(seed)
-                self.assertEqual(
-                    self.model.gen_sentence(("a", "c"), 2, 0.0001, False),
-                    ["a", "c", "b"],
-                )
+            random.seed(seed)
+            outputs.add(
+                tuple(self.model.gen_sentence(("a", "c"), 2, 0.0001, False))
+            )
+        self.assertGreater(len(outputs), 1)
 
-    # BUG-LEDGER: ngram-gen-flatten-dedup
-    def test_bug_repeated_words_are_dropped_from_output(self) -> None:
-        """``duplicate=True`` has no effect on output; expected: keep words."""
+    def test_duplicate_keeps_repeated_words(self) -> None:
+        # Each step adds one word; with duplicate=True repeats stay.
         for seed in range(5):
             with self.subTest(seed=seed):
                 random.seed(seed)
                 words = self.model.gen_sentence(
                     ("c", "c"), 4, 0.0001, False, True
                 )
-                self.assertEqual(words, ["c"])
+                self.assertEqual(len(words), 6)
+                self.assertEqual(words[:2], ["c", "c"])
 
     def test_start_item_of_other_type_is_skipped(self) -> None:
         self.assertEqual(
@@ -206,16 +244,12 @@ class BigramGenSentenceTestCase(unittest.TestCase):
         self.addCleanup(random.setstate, state)
         self.model = make_bigram_model()
 
-    # BUG-LEDGER: ngram-gen-tie-bias
-    def test_bug_equal_probabilities_always_pick_first_candidate(self) -> None:
-        """``probs.index(random.choice(p2))`` ignores ties; expected: random."""
+    def test_equal_probabilities_pick_any_candidate(self) -> None:
+        outputs = set()
         for seed in range(20):
-            with self.subTest(seed=seed):
-                random.seed(seed)
-                self.assertEqual(
-                    self.model.gen_sentence("x", 1, 0.0001, False),
-                    ["x", "p"],
-                )
+            random.seed(seed)
+            outputs.add(tuple(self.model.gen_sentence("x", 1, 0.0001, False)))
+        self.assertEqual(outputs, {("x", "p"), ("x", "q")})
 
 
 if __name__ == "__main__":
