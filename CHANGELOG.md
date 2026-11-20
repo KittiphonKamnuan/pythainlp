@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `thaiword_to_time()`: a "ตี" hour ends the affix search; an hour above 23
+  or a minute above 59 raises `ValueError`
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

@@ -265,10 +265,9 @@ def _mark_affix(text: str) -> str:
     """
     Insert "|" after the hour affix; return "" if none is found.
 
-    Affixes are tried in order. A non-"ตี" affix ends the search;
-    a "ตี" match does not, so a later affix can override it.
+    Affixes are tried in order, and the first match ends the search.
+    "ตี" matches only as part of an hour such as "ตีสาม".
     """
-    marked = ""
     for affix in _THAI_TIME_AFFIX:
         if affix not in text:
             continue
@@ -276,9 +275,8 @@ def _mark_affix(text: str) -> str:
             return text.replace(affix, affix + "|")
         for ti_hour in _TI_HOURS:
             if ti_hour in text:
-                marked = text.replace(ti_hour, ti_hour + "|")
-                break
-    return marked
+                return text.replace(ti_hour, ti_hour + "|")
+    return ""
 
 
 def _is_evening(last: str) -> bool:
@@ -392,8 +390,14 @@ def thaiword_to_time(text: str, padding: bool = True) -> str:
     hour_text = _hour_text(hour)
     if not hour_text:
         raise ValueError("Cannot find any Thai word for hour.")
+    minute_text = _minute_text(minute)
+    if int(hour_text) > 23 or int(minute_text) > 59:
+        raise ValueError(
+            f"Time {hour_text}:{minute_text} is out of range "
+            "(hour 0-23, minute 0-59)."
+        )
 
     if padding and len(hour_text) == 1:
         hour_text = "0" + hour_text
 
-    return hour_text + ":" + _minute_text(minute)
+    return hour_text + ":" + minute_text

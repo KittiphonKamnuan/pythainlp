@@ -122,15 +122,11 @@ _FORMAT_ERR: tuple[tuple[int, int, int, Optional[str], Optional[str], str], ...]
 )
 
 _TW_OK: tuple[tuple[str, bool, str], ...] = (
-    ("เที่ยงกสิบเอ็ดสี่ยี่สิบตีห้ายี่", True, "12:177"),
     ("ตีห้าตีสี่", True, "05:00"),
     ("ทุ่มเที่ยงคืนๆ", False, "19:00"),
     ("หกโมงเช้า", False, "6:00"),
-    ("โมงเย็นเที่ยงคืนสามสองตีหนึ่งตีห้าตีห้า", True, "25:16"),
     ("นาทีเที่ยงคืนบ่ายเที่ยงคืน", True, "00:13"),
-    ("บ่ายโมงครึ่งตีสองสิบเอ็ด", False, "13:321"),
     ("หนึ่งทุ่มกว่า", True, "19:00"),
-    ("ยี่โมงเช้าเจ็ดสิบเอ็ดสองตีห้า", True, "08:78"),
     ("บ่ายสี่สองหกโมงเย็น", True, "16:00"),
     ("ยี่นาฬิกาสิบ", True, "02:10"),
     ("ตีสามสิบห้า", True, "03:15"),
@@ -145,6 +141,10 @@ _TW_OK: tuple[tuple[str, bool, str], ...] = (
 )
 
 _TW_ERR: tuple[tuple[str, bool, type[Exception], str], ...] = (
+    ("เที่ยงกสิบเอ็ดสี่ยี่สิบตีห้ายี่", True, ValueError, "Cannot find any Thai word for hour."),
+    ("โมงเย็นเที่ยงคืนสามสองตีหนึ่งตีห้าตีห้า", True, ValueError, "Time 25:16 is out of range (hour 0-23, minute 0-59)."),
+    ("บ่ายโมงครึ่งตีสองสิบเอ็ด", False, ValueError, "Time 13:321 is out of range (hour 0-23, minute 0-59)."),
+    ("ยี่โมงเช้าเจ็ดสิบเอ็ดสองตีห้า", True, ValueError, "Time 8:78 is out of range (hour 0-23, minute 0-59)."),
     ("เที่ยงคืนสิบหกบ่ายโมง", True, ValueError, "Cannot find any Thai word for hour."),
     ("สามสิบเอ็ดๆแปดสามสิบตีหกเจ็ด", True, ValueError, "Cannot find any Thai word for hour."),
     ("ตีเที่ยงวันนาฬิกาตีห้า", False, ValueError, "The input string is not a valid Thai numeral"),
@@ -192,7 +192,7 @@ def _time_outcome(text: str, padding: bool) -> str:
 
 def _out_of_range(outcome: str) -> bool:
     if outcome.startswith("!"):
-        return False
+        return " is out of range " in outcome
     hour, minute = outcome.split(":")
     return int(hour) > 23 or int(minute) > 59
 
@@ -282,16 +282,12 @@ class ThaiwordToTimeTestCase(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, _NO_HOUR):
             thaiword_to_time("นาฬิกาห้านาที")
 
-    def test_ti_fallthrough(self) -> None:
-        # BUG-LEDGER: thaiword-to-time-ti
-        # A "ตี" match does not stop the affix search; a later affix
-        # (here "เที่ยง") re-splits the text, so the minute differs.
-        self.assertEqual(thaiword_to_time("ตีสามเที่ยงสิบ"), "03:10")
-        self.assertEqual(thaiword_to_time("ตีสามเที่ยงวันสิบห้า"), "03:15")
-        self.assertEqual(thaiword_to_time("ตีสามสิบห้าเที่ยงครึ่ง"), "03:30")
-        self.assertEqual(
-            thaiword_to_time("โมงเย็นเที่ยงคืนสามสองตีหนึ่งตีห้าตีห้า"), "25:16"
-        )
+    def test_ti_hour_ends_affix_search(self) -> None:
+        # The "ตี" hour ends the affix search; a later "เที่ยง" is read as
+        # part of the minutes.
+        self.assertEqual(thaiword_to_time("ตีสองเที่ยง"), "02:12")
+        with self.assertRaisesRegex(ValueError, "Time 3:120 is out of range"):
+            thaiword_to_time("ตีสามเที่ยงสิบ")
 
     def test_ti_six(self) -> None:
         for padding, expected in ((True, "06:00"), (False, "6:00")):
@@ -306,14 +302,20 @@ class ThaiwordToTimeTestCase(unittest.TestCase):
             thaiword_to_time("ตีสิบห้า")
 
     def test_out_of_range_values(self) -> None:
-        # BUG-LEDGER: thaiword-to-time-range
-        # Hour above 23 and minute above 59 are returned unchecked.
-        self.assertEqual(
-            thaiword_to_time("โมงเย็นเที่ยงคืนสามสองตีหนึ่งตีห้าตีห้า"), "25:16"
+        cases = (
+            ("โมงเย็นเที่ยงคืนสามสองตีหนึ่งตีห้าตีห้า", True, "Time 25:16"),
+            ("บ่ายโมงครึ่งตีสองสิบเอ็ด", False, "Time 13:321"),
+            ("บ่ายโมงครึ่งตีสองสิบเอ็ด", True, "Time 13:321"),
         )
-        self.assertEqual(
-            thaiword_to_time("บ่ายโมงครึ่งตีสองสิบเอ็ด", False), "13:321"
-        )
+        for text, padding, prefix in cases:
+            with self.subTest(text=text, padding=padding):
+                with self.assertRaisesRegex(
+                    ValueError, f"^{prefix} is out of range"
+                ):
+                    thaiword_to_time(text, padding)
+        # Boundaries stay valid.
+        self.assertEqual(thaiword_to_time("ห้าทุ่มห้าสิบเก้านาที"), "23:59")
+        self.assertEqual(thaiword_to_time("เที่ยงคืน"), "00:00")
 
     def test_unknown_token(self) -> None:
         # Formerly KeyError; "ตีหก" and "ตีสิบห้า" are in test_ti_six.
@@ -351,10 +353,9 @@ class ThaiwordToTimeTestCase(unittest.TestCase):
 
     def test_unchanged_grid(self) -> None:
         # Seeded random token strings; outcomes recorded before the fix.
-        # Excluded: texts with "ตี" (ตีหก is fixed; the rest touches the
-        # unfixed bug thaiword-to-time-ti), results out of range (unfixed
-        # bug thaiword-to-time-range), and the hour error (formerly
-        # KeyError; see test_unknown_token).
+        # Excluded: texts with "ตี" (see test_ti_hour_ends_affix_search),
+        # results out of range (see test_out_of_range_values), and the hour
+        # error (formerly KeyError; see test_unknown_token).
         digest = hashlib.sha256()
         count = 0
         for text in _fuzz_inputs():

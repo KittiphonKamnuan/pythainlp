@@ -138,8 +138,6 @@ Entry format:
   Input "เอะ" returns "live". Expected: "dead".
 - **`syllable-consonant-sets`** `pythainlp/util/syllable.py`.
   The consonant sets are inconsistent between functions.
-- **`thaiword-to-time-ti`** `pythainlp/util/time.py`: `thaiword_to_time`.
-  Input with "ตี" has no break after it.
 - **`thai-strptime-m-y`** `pythainlp/util/date.py`: `thai_strptime`.
   Directives `%m` and `%y` are handled incorrectly.
 - **`count-thai-chars-double`** `pythainlp/util/thai.py`: `count_thai_chars`.
@@ -147,10 +145,6 @@ Entry format:
 - **`numtoword-ed-duplicate`** `pythainlp/util/numtoword.py`.
   The "เอ็ด" rule is applied in both `_num_to_thaiword_block` and
   `num_to_thaiword`. Results are correct; the code is redundant.
-- **`thaiword-to-time-range`** `pythainlp/util/time.py`: `thaiword_to_time`.
-  Input "บ่ายโมงครึ่งตีสองสิบเอ็ด" with `padding=False` returns "13:321".
-  A minute above 59 or an hour above 23 is not checked. Expected:
-  `ValueError`.
 
 #### Tokenize
 
