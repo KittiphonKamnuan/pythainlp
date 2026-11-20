@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `KhaveeVerifier.is_sumpus()` and `check_karu_lahu()` return `False` for a
+  word with nothing left after removing tone marks and การันต์
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

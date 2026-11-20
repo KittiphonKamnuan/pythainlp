@@ -798,6 +798,10 @@ class KhaveeVerifier:
         marttra2 = self.check_marttra(word2)
         sara1 = self.check_sara(word1)
         sara2 = self.check_sara(word2)
+        # A word with nothing left after removing tone marks and การันต์
+        # has no syllable to rhyme.
+        if not sara1 or not sara2:
+            return False
 
         # check_marttra follows spelling ("วัย" is อะ+เกย), but rhyme follows
         # sound, so normalize to the สระเกิน forms. 'เอา' needs none.
@@ -833,7 +837,8 @@ class KhaveeVerifier:
 
         :param str text: single Thai syllable or word to be classified
         :return: "karu" for a heavy syllable, "lahu" for a light syllable,
-            or ``False`` if the text is empty
+            or ``False`` if the text is empty, or empty after removing tone
+            marks and การันต์
         :rtype: Union[str, bool]
         """
         if not text:
@@ -844,6 +849,9 @@ class KhaveeVerifier:
 
         marttra = self.check_marttra(text)
         sara = self.check_sara(text)
+        # Nothing is left after removing tone marks and การันต์.
+        if not sara:
+            return False
 
         if (
             marttra != "กา"

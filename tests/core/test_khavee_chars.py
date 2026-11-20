@@ -45,7 +45,7 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("คว", "อัว", "เกอว", True, "karu"),
     ("จักร", "อะ", "กก", True, "karu"),
     ("วิศวกรรมศาสตร์", "อิ", "กด", True, "karu"),
-    ("่", "", "", False, "karu"),
+    ("่", "", "", False, False),
     ("ไตรลักษณ์", "ไอ", "กา", True, "karu"),
     ("หมูหย็อง", "อู", "กง", True, "karu"),
     ("แคว", "แอ", "กา", False, "karu"),
@@ -511,10 +511,10 @@ WORD_CASES: tuple[tuple[str, str, str, bool, str], ...] = (
     ("ๅ", "อะ", "กา", False, "lahu"),
     ("ๆ", "อะ", "กา", False, "lahu"),
     ("็", "เอาะ", "กา", False, "lahu"),
-    ("้", "", "", False, "karu"),
-    ("๊", "", "", False, "karu"),
-    ("๋", "", "", False, "karu"),
-    ("์", "", "", False, "karu"),
+    ("้", "", "", False, False),
+    ("๊", "", "", False, False),
+    ("๋", "", "", False, False),
+    ("์", "", "", False, False),
     ("ํ", "อะ", "กง", False, "karu"),
     ("๎", "อะ", "กา", False, "lahu"),
 )
@@ -987,7 +987,7 @@ _ALPHABET = "".join(
 )
 # SHA-256 over all one- and two-character strings of _ALPHABET
 _ALPHABET_DIGEST = (
-    "818b51338c55a0b9659fbc2dbef9ea8d8d588792b8d9e34d8cd495a4047d54b8"
+    "7c944aa8146244409a24cd567c32ce7db84ad65d98a3a35621a2f55945de22ad"
 )
 # Every 31st word of the same sequence, as (word, sara, marttra,
 # true final, karu-lahu). Shows the failing words if the digest differs.
@@ -1004,7 +1004,7 @@ _ALPHABET_SAMPLE: list[tuple[str, str, str, bool, Union[str, bool]]] = [
     ("คึ", "อึ", "กา", False, "lahu"),
     ("ฅช", "โอะ", "กด", True, "karu"),
     ("ฅษ", "โอะ", "กด", True, "karu"),
-    ("ฅ์", "", "", False, "karu"),
+    ("ฅ์", "", "", False, False),
     ("ฆผ", "โอะ", "กา", True, "lahu"),
     ("ฆ฿", "โอะ", "กา", False, "lahu"),
     ("งฏ", "โอะ", "กด", True, "karu"),
@@ -1079,7 +1079,7 @@ _ALPHABET_SAMPLE: list[tuple[str, str, str, bool, Union[str, bool]]] = [
     ("รึ", "อึ", "กา", False, "lahu"),
     ("ฤช", "อึ", "กด", True, "karu"),
     ("ฤษ", "อึ", "กด", True, "karu"),
-    ("ฤ์", "", "", False, "karu"),
+    ("ฤ์", "", "", False, False),
     ("ลผ", "โอะ", "กา", True, "lahu"),
     ("ล฿", "โอะ", "กา", False, "lahu"),
     ("ฦฏ", "อึ", "กด", True, "karu"),
@@ -1154,7 +1154,7 @@ _ALPHABET_SAMPLE: list[tuple[str, str, str, bool, Union[str, bool]]] = [
     ("ๆึ", "อึ", "กา", False, "lahu"),
     ("็ช", "เอาะ", "กา", False, "lahu"),
     ("็ษ", "เอาะ", "กา", False, "lahu"),
-    ("็์", "", "", False, "karu"),
+    ("็์", "", "", False, False),
     ("่ผ", "โอะ", "กา", False, "lahu"),
     ("่฿", "โอะ", "กา", False, "lahu"),
     ("้ฏ", "โอะ", "กา", False, "lahu"),
@@ -1288,12 +1288,16 @@ class KhaveeWordCharacterizationTestCase(unittest.TestCase):
         self.assertEqual(self.kv.check_sara("ก็็"), "็")
         self.assertEqual(self.kv.check_sara("ฮ็อตด็อก"), "็")
 
-    def test_sumpus_of_empty_after_stripping(self) -> None:
-        # BUG-LEDGER: khavee-sumpus-empty-after-strip
-        # Inputs that become empty after removing tone marks and การันต์
-        # rhyme with each other and count as heavy (ครุ).
-        self.assertTrue(self.kv.is_sumpus("้", "์"))
-        self.assertEqual(self.kv.check_karu_lahu("้"), "karu")
+    def test_empty_after_stripping(self) -> None:
+        # Nothing is left after removing tone marks and การันต์: no syllable
+        # to rhyme or to weigh.
+        for word in ("้", "์", "่์", "อ์", "ก์"):
+            with self.subTest(word=word):
+                self.assertIs(self.kv.check_karu_lahu(word), False)
+                self.assertIs(self.kv.is_sumpus(word, word), False)
+                self.assertIs(self.kv.is_sumpus("กา", word), False)
+                self.assertIs(self.kv.is_sumpus(word, "กา"), False)
+        self.assertIs(self.kv.is_sumpus("้", "์"), False)
 
 
 _EMPTY = "Stanza (บทที่) {} contains empty sentences."

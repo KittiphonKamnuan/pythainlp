@@ -199,10 +199,6 @@ Entry format:
   `check_sara`. Input "ก็็" or "เป็นหลักเป็นฐาน" returns the bare mark "็",
   because only one ไม้ไต่คู้ is consumed. Expected: a vowel name such as
   "เอาะ".
-- **`khavee-sumpus-empty-after-strip`** `pythainlp/khavee/core.py`:
-  `is_sumpus`, `check_karu_lahu`. A word that is empty after stripping tone
-  marks or การันต์ gets sara and marttra "". `is_sumpus("้", "์")` returns
-  True and `check_karu_lahu("้")` returns "karu". Expected: False.
 
 #### Soundex
 
