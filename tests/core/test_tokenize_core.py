@@ -406,13 +406,22 @@ class SentTokenizeDispatchTestCase(unittest.TestCase):
                     )
 
     def test_whitespace_engines_word_list_trailing_separator(self) -> None:
-        # BUG-LEDGER: whitespace-trailing-append
+        cases = (
+            (["ก", " ", "ข", " "], [["ก"], ["ข"]]),
+            (["ก", " ", " "], [["ก"]]),
+            (["ก", "\n"], [["ก"]]),
+            ([" ", "ก", " "], [["ก"]]),
+            ([" "], []),
+            ([], []),
+        )
         for engine in ("whitespace", "whitespace+newline"):
-            with self.subTest(engine=engine):
-                self.assertEqual(
-                    sent_tokenize(["ก", " ", "ข", " "], engine=engine),
-                    [["ก"], ["ข"], []],
-                )
+            for words, expected in cases:
+                if engine == "whitespace" and "\n" in words:
+                    continue
+                with self.subTest(engine=engine, words=words):
+                    self.assertEqual(
+                        sent_tokenize(words, engine=engine), expected
+                    )
 
     def test_unknown_engine(self) -> None:
         for text in (TEXT, ["ก", "ข"]):

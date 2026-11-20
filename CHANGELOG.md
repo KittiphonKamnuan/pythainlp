@@ -17,6 +17,13 @@ and this project adheres to
 
 - Full release notes: <https://github.com/PyThaiNLP/pythainlp/releases>
 
+## [Unreleased]
+
+### Fixed
+
+- `sent_tokenize()` with `whitespace` or `whitespace+newline`: a word list
+  that ends with a separator no longer gets an extra empty sentence
+
 ## [5.4.0] - 2026-10-09
 
 ### Added

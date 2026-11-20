@@ -488,18 +488,15 @@ def _split_at_separators(
     """
     result: list[list[str]] = []
     sentence: list[str] = []
-    for i, w in enumerate(words):
+    for w in words:
         if is_separator(w):
-            if not sentence:
-                continue
-            result.append(sentence)
-            sentence = []
+            if sentence:
+                result.append(sentence)
+                sentence = []
         else:
             sentence.append(w)
-        if i + 1 == len(words):
-            # BUG-LEDGER: whitespace-trailing-append
-            # A trailing separator also appends an empty sentence.
-            result.append(sentence)
+    if sentence:
+        result.append(sentence)
     return result
 
 
