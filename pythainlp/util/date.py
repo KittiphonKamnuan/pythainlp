@@ -168,6 +168,10 @@ def convert_years(year: str, src: str = "be", target: str = "ad") -> str:
 
 
 def _find_month(text: str) -> int:
+    # An exact name or number first, so "10" is not read as "1" (January).
+    for i, m in enumerate(thai_full_month_lists):
+        if text in m:
+            return i + 1
     for i, m in enumerate(thai_full_month_lists):
         for j in m:
             if j in text:

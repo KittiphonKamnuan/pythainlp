@@ -296,6 +296,15 @@ class ThaiStrptimeTestCase(unittest.TestCase):
                 with self.assertRaises(IndexError):
                     thai_strptime(text, fmt)
 
+    def test_numeric_month_with_b(self) -> None:
+        # "10" to "12" were read as "1" (January).
+        for month in range(1, 13):
+            for text in (f"15 {month} 2565", f"15 {month:02d} 2565"):
+                with self.subTest(text=text):
+                    self.assertEqual(
+                        thai_strptime(text, "%d %B %Y").month, month
+                    )
+
     def test_invalid_pattern(self) -> None:
         with self.assertRaises(re.error):
             thai_strptime("15 ก.ค. 2565", "(%d %B %Y")
